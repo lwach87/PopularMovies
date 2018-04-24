@@ -8,12 +8,15 @@ public class Movies {
 
     @SerializedName("page")
     private Integer page;
+
     @SerializedName("total_results")
     private Integer totalResults;
+
     @SerializedName("total_pages")
     private Integer totalPages;
+
     @SerializedName("results")
-    private List<Result> results = null;
+    public List<Result> results = null;
 
     public Integer getPage() {
         return page;
