@@ -1,9 +1,9 @@
-package com.example.lukaszwachowski.popularmovies.ui;
+package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
                 .applicationComponent(MoviesApp.get(this).component())
                 .build().inject(this);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(listAdapter);
     }
 

@@ -1,4 +1,4 @@
-package com.example.lukaszwachowski.popularmovies.ui;
+package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
 import com.example.lukaszwachowski.popularmovies.network.MovieService;
 import com.example.lukaszwachowski.popularmovies.network.model.Result;
