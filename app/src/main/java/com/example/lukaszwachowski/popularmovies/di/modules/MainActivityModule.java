@@ -1,8 +1,8 @@
 package com.example.lukaszwachowski.popularmovies.di.modules;
 
-import com.example.lukaszwachowski.popularmovies.ui.MainActivity;
+import com.example.lukaszwachowski.popularmovies.ui.mainActivity.MainActivity;
 import com.example.lukaszwachowski.popularmovies.di.MainActivityScope;
-import com.example.lukaszwachowski.popularmovies.ui.ListAdapter;
+import com.example.lukaszwachowski.popularmovies.ui.mainActivity.ListAdapter;
 import com.squareup.picasso.Picasso;
 
 import dagger.Module;

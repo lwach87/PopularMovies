@@ -4,7 +4,7 @@ import com.example.lukaszwachowski.popularmovies.di.MainActivityScope;
 import com.example.lukaszwachowski.popularmovies.di.modules.MainActivityMVPModule;
 import com.example.lukaszwachowski.popularmovies.di.modules.MainActivityModule;
 import com.example.lukaszwachowski.popularmovies.di.modules.MovieServiceModule;
-import com.example.lukaszwachowski.popularmovies.ui.MainActivity;
+import com.example.lukaszwachowski.popularmovies.ui.mainActivity.MainActivity;
 
 import dagger.Component;
 
