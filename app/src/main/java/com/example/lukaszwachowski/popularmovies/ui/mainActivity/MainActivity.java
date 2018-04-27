@@ -5,6 +5,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import com.example.lukaszwachowski.popularmovies.MoviesApp;
@@ -48,10 +50,36 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.sort_by_rating:
+                listAdapter.clearData();
+                presenter.loadData("top_rated");
+                return true;
+
+            case R.id.sort_by_popularity:
+                listAdapter.clearData();
+                presenter.loadData("popular");
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         presenter.setView(this);
-        presenter.loadData();
+        presenter.loadData("top_rated");
     }
 
     @Override

@@ -5,4 +5,6 @@
     <string name="release_date">Date</string>
     <string name="rating">Rating</string>
     <string name="plot_synopsis">Plot synopsis</string>
+    <string name="action_rating">Top Rated</string>
+    <string name="action_popularity">Popular</string>
 </resources>

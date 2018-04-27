@@ -13,7 +13,7 @@ public class MainActivityMVP {
 
     public interface Presenter {
 
-        void loadData();
+        void loadData(String sortingType);
 
         void rxUnSubscribe();
 

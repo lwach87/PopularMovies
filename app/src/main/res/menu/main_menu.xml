@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/sort_by_rating"
+        android:orderInCategory="1"
+        android:title="@string/action_rating"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_by_popularity"
+        android:orderInCategory="2"
+        android:title="@string/action_popularity"
+        app:showAsAction="never" />
+
+</menu>

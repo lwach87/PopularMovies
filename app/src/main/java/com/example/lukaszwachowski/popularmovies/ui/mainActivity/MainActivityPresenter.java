@@ -20,9 +20,9 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
     }
 
     @Override
-    public void loadData() {
+    public void loadData(String sortingType) {
 
-        subscription = movieService.getMovies()
+        subscription = movieService.getMovies(sortingType)
                 .concatMap(movies -> Observable.from(movies.results))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

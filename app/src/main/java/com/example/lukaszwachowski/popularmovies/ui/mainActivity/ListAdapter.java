@@ -86,8 +86,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
         }
     }
 
-    public void swapData(Result teacher) {
-        results.add(teacher);
+    public void swapData(Result result) {
+        results.add(result);
         notifyDataSetChanged();
     }
 
