@@ -1,10 +1,10 @@
-package com.example.lukaszwachowski.popularmovies.network.model;
+package com.example.lukaszwachowski.popularmovies.network.movies;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Result {
+public class MoviesResult {
 
     @SerializedName("vote_count")
     private Integer voteCount;

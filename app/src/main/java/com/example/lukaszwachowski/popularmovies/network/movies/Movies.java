@@ -1,4 +1,4 @@
-package com.example.lukaszwachowski.popularmovies.network.model;
+package com.example.lukaszwachowski.popularmovies.network.movies;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -16,7 +16,7 @@ public class Movies {
     private Integer totalPages;
 
     @SerializedName("results")
-    public List<Result> results = null;
+    private List<MoviesResult> results = null;
 
     public Integer getPage() {
         return page;
@@ -30,7 +30,7 @@ public class Movies {
         return totalPages;
     }
 
-    public List<Result> getResults() {
+    public List<MoviesResult> getResults() {
         return results;
     }
 }
