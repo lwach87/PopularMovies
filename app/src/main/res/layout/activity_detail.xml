@@ -2,19 +2,20 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_detail"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".ui.detailActivity.DetailActivity">
 
-    <android.support.constraint.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".ui.detailActivity.DetailActivity">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="#42A5F5"
+            android:background="@color/colorAccent"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:paddingStart="20dp"
@@ -34,11 +35,12 @@
 
         <ImageView
             android:id="@+id/detail_poster"
-            android:layout_width="150dp"
-            android:layout_height="200dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginStart="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="220dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/poster_detail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
@@ -62,7 +64,6 @@
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp"
             android:text="@string/rating"
-            android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/detail_poster"
             app:layout_constraintTop_toBottomOf="@+id/date_detail" />
 
@@ -70,16 +71,51 @@
             android:id="@+id/plot_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="32dp"
-            android:paddingLeft="32dp"
-            android:paddingRight="32dp"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:text="@string/plot_synopsis"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_poster" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/videos_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/reviews"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/plot_detail" />
+
+        <TextView
+            android:id="@+id/reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/reviews"
+            app:layout_constraintBottom_toTopOf="@+id/reviews_recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/reviews_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
