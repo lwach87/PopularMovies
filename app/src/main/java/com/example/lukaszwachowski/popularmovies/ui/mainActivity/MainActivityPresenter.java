@@ -1,7 +1,7 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
 import com.example.lukaszwachowski.popularmovies.network.MovieService;
-import com.example.lukaszwachowski.popularmovies.network.model.Result;
+import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 
 import rx.Observable;
 import rx.Observer;
@@ -23,10 +23,10 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
     public void loadData(String sortingType) {
 
         subscription = movieService.getMovies(sortingType)
-                .concatMap(movies -> Observable.from(movies.results))
+                .concatMap(movies -> Observable.from(movies.getResults()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Result>() {
+                .subscribe(new Observer<MoviesResult>() {
                     @Override
                     public void onCompleted() {
 
@@ -40,7 +40,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
                     }
 
                     @Override
-                    public void onNext(Result result) {
+                    public void onNext(MoviesResult result) {
                         if (view != null) {
                             view.updateData(result);
                         }

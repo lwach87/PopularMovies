@@ -13,7 +13,7 @@ import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
 import com.example.lukaszwachowski.popularmovies.di.components.DaggerMainActivityComponent;
 import com.example.lukaszwachowski.popularmovies.di.modules.MainActivityModule;
-import com.example.lukaszwachowski.popularmovies.network.model.Result;
+import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 
 import javax.inject.Inject;
 
@@ -76,14 +76,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         presenter.setView(this);
         presenter.loadData("top_rated");
     }
 
     @Override
-    public void updateData(Result result) {
+    public void updateData(MoviesResult result) {
         listAdapter.swapData(result);
     }
 
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     @Override
     protected void onStop() {
         super.onStop();
+        listAdapter.clearData();
         presenter.rxUnSubscribe();
     }
 }

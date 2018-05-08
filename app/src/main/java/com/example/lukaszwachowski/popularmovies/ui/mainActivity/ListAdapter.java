@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.network.model.Result;
+import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivity;
 import com.squareup.picasso.Picasso;
 
@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.IMAGE_URL;
+import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_ID;
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_POSTER;
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.ORIGINAL_TITLE;
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.PLOT_SYNOPSIS;
@@ -29,7 +30,7 @@ import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUti
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder> {
 
-    private List<Result> results = new ArrayList<>();
+    private List<MoviesResult> results = new ArrayList<>();
     private Context context;
     private Picasso picasso;
 
@@ -82,11 +83,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
             intent.putExtra(PLOT_SYNOPSIS, results.get(position).getOverview());
             intent.putExtra(USER_RATING, results.get(position).getVoteAverage());
             intent.putExtra(RELEASE_DATE, results.get(position).getReleaseDate());
+            intent.putExtra(MOVIE_ID, results.get(position).getId());
             context.startActivity(intent);
         }
     }
 
-    public void swapData(Result result) {
+    public void swapData(MoviesResult result) {
         results.add(result);
         notifyDataSetChanged();
     }

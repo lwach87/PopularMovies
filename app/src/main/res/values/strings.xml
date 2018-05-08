@@ -7,4 +7,9 @@
     <string name="plot_synopsis">Plot synopsis</string>
     <string name="action_rating">Top Rated</string>
     <string name="action_popularity">Popular</string>
+    <string name="author">Author:</string>
+    <string name="detail_review">Detail_Review</string>
+    <string name="review">Review</string>
+    <string name="reviews">REVIEWS</string>
+    <string name="play_icon">play_icon</string>
 </resources>

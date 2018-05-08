@@ -1,12 +1,12 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
-import com.example.lukaszwachowski.popularmovies.network.model.Result;
+import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 
 public class MainActivityMVP {
 
     interface View {
 
-        void updateData(Result result);
+        void updateData(MoviesResult result);
 
         void showSnackBar();
     }
