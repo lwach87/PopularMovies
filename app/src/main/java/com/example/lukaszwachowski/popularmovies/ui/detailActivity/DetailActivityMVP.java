@@ -11,19 +11,15 @@ public class DetailActivityMVP {
 
         void updateVideos(VideosResult result);
 
-        void showSnackBar();
+        void showSnackBar(String text);
     }
 
     public interface Presenter {
 
-        void loadReviews(String movieId);
+        void loadData(String movieId);
 
-        void loadVideos(String movieId);
+        void detachView();
 
-        void reviewsUnSubscribe();
-
-        void videosUnSubscribe();
-
-        void setView(DetailActivityMVP.View view);
+        void attachView(DetailActivityMVP.View view);
     }
 }

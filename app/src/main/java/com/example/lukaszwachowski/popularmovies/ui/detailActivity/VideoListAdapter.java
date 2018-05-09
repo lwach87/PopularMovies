@@ -47,7 +47,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
 
         picasso.load(YOUTUBE_IMG + list.get(position).getKey() + "/mqdefault.jpg")
                 .into(holder.detailTrailer);
-
     }
 
     @Override
@@ -79,9 +78,5 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     public void swapData(VideosResult result) {
         list.add(result);
         notifyDataSetChanged();
-    }
-
-    public void clearData() {
-        list.clear();
     }
 }

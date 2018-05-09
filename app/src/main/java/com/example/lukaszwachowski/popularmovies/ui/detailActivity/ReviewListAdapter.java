@@ -64,8 +64,4 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
         list.add(result);
         notifyDataSetChanged();
     }
-
-    public void clearData() {
-        list.clear();
-    }
 }

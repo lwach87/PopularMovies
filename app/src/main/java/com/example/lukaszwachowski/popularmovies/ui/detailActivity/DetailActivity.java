@@ -57,30 +57,16 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
         setContentView(detailAdapter);
 
         ButterKnife.bind(this);
+        presenter.attachView(this);
+        presenter.loadData(String.valueOf(getIntent().getIntExtra("id", 1)));
 
         videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        videoRecyclerView.setNestedScrollingEnabled(false);
-        videoRecyclerView.setHasFixedSize(true);
         videoRecyclerView.setAdapter(videosAdapter);
 
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         reviewRecyclerView.setNestedScrollingEnabled(false);
-        reviewRecyclerView.setHasFixedSize(true);
         reviewRecyclerView.setAdapter(reviewsAdapter);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.setView(this);
-
-        videosAdapter.clearData();
-
-        String movieId = String.valueOf(getIntent().getIntExtra("id", 1));
-        presenter.loadReviews(movieId);
-        presenter.loadVideos(movieId);
-    }
-
 
     @Override
     public void updateReviews(ReviewsResult result) {
@@ -93,16 +79,13 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     }
 
     @Override
-    public void showSnackBar() {
-        Snackbar.make(rootView, "No internet connection", Snackbar.LENGTH_SHORT).show();
+    public void showSnackBar(String text) {
+        Snackbar.make(rootView, text, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        reviewsAdapter.clearData();
-        videosAdapter.clearData();
-        presenter.reviewsUnSubscribe();
-        presenter.videosUnSubscribe();
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

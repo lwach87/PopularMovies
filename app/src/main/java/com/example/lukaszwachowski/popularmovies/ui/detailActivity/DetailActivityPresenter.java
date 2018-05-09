@@ -1,104 +1,69 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
 import com.example.lukaszwachowski.popularmovies.network.DetailService;
-import com.example.lukaszwachowski.popularmovies.network.reviews.ReviewsResult;
-import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class DetailActivityPresenter implements DetailActivityMVP.Presenter {
 
     private DetailActivityMVP.View view;
-    private Subscription reviewSubscription = null;
-    private Subscription videoSubscription = null;
+    private CompositeDisposable reviewDisposable;
+    private CompositeDisposable videoDisposable;
     private DetailService detailService;
 
     public DetailActivityPresenter(DetailService detailService) {
         this.detailService = detailService;
+        reviewDisposable = new CompositeDisposable();
+        videoDisposable = new CompositeDisposable();
     }
 
     @Override
-    public void loadReviews(String movieId) {
+    public void loadData(String movieId) {
 
-        reviewSubscription = detailService.getReviews(movieId)
-                .concatMap(reviews -> Observable.from(reviews.getResults()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ReviewsResult>() {
-                    @Override
-                    public void onCompleted() {
+        reviewDisposable.add(
+                detailService.getReviews(movieId)
+                        .concatMap(reviews -> Observable.fromIterable(reviews.getResults()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> {
+                            if (view != null) {
+                                view.updateReviews(result);
+                            }
+                        }, error -> {
+                            if (view != null) {
+                                view.showSnackBar(error.getLocalizedMessage());
+                            }
+                        })
+        );
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (view != null) {
-                            view.showSnackBar();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(ReviewsResult result) {
-                        if (view != null) {
-                            view.updateReviews(result);
-                        }
-                    }
-                });
+        videoDisposable.add(
+                detailService.getVideos(movieId)
+                        .concatMap(videos -> Observable.fromIterable(videos.getResults()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> {
+                            if (view != null) {
+                                view.updateVideos(result);
+                            }
+                        }, error -> {
+                            if (view != null) {
+                                view.showSnackBar(error.getLocalizedMessage());
+                            }
+                        })
+        );
     }
 
     @Override
-    public void loadVideos(String movieId) {
-
-        videoSubscription = detailService.getVideos(movieId)
-                .concatMap(videos -> Observable.from(videos.getResults()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<VideosResult>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (view != null) {
-                            view.showSnackBar();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(VideosResult result) {
-                        if (view != null) {
-                            view.updateVideos(result);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void reviewsUnSubscribe() {
-        if (reviewSubscription != null) {
-            if (!reviewSubscription.isUnsubscribed()) {
-                reviewSubscription.unsubscribe();
-            }
-        }
-    }
-
-    @Override
-    public void videosUnSubscribe() {
-        if (videoSubscription != null) {
-            if (!videoSubscription.isUnsubscribed()) {
-                videoSubscription.unsubscribe();
-            }
-        }
-    }
-
-    @Override
-    public void setView(DetailActivityMVP.View view) {
+    public void attachView(DetailActivityMVP.View view) {
         this.view = view;
+    }
+
+    @Override
+    public void detachView() {
+        reviewDisposable.clear();
+        videoDisposable.clear();
     }
 }
