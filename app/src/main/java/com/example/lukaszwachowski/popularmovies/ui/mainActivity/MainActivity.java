@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
                 .applicationComponent(MoviesApp.get(this).component())
                 .build().inject(this);
 
+        presenter.attachView(this);
+        presenter.loadData("top_rated");
+
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(listAdapter);
     }
@@ -76,26 +79,18 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.setView(this);
-        presenter.loadData("top_rated");
-    }
-
-    @Override
     public void updateData(MoviesResult result) {
         listAdapter.swapData(result);
     }
 
     @Override
-    public void showSnackBar() {
-        Snackbar.make(rootView, "No internet connection", Snackbar.LENGTH_SHORT).show();
+    public void showSnackBar(String text) {
+        Snackbar.make(rootView, text, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        listAdapter.clearData();
-        presenter.rxUnSubscribe();
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

@@ -8,15 +8,15 @@ public class MainActivityMVP {
 
         void updateData(MoviesResult result);
 
-        void showSnackBar();
+        void showSnackBar(String text);
     }
 
     public interface Presenter {
 
         void loadData(String sortingType);
 
-        void rxUnSubscribe();
+        void detachView();
 
-        void setView(MainActivityMVP.View view);
+        void attachView(MainActivityMVP.View view);
     }
 }

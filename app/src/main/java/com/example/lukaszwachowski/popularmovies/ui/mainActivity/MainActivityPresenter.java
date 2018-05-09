@@ -1,64 +1,51 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
 import com.example.lukaszwachowski.popularmovies.network.MovieService;
-import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 
 public class MainActivityPresenter implements MainActivityMVP.Presenter {
 
     private MainActivityMVP.View view;
-    private Subscription subscription = null;
+    private CompositeDisposable disposable;
     private MovieService movieService;
 
     public MainActivityPresenter(MovieService movieService) {
         this.movieService = movieService;
+        disposable = new CompositeDisposable();
     }
 
     @Override
     public void loadData(String sortingType) {
 
-        subscription = movieService.getMovies(sortingType)
-                .concatMap(movies -> Observable.from(movies.getResults()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MoviesResult>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (view != null) {
-                            view.showSnackBar();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(MoviesResult result) {
-                        if (view != null) {
-                            view.updateData(result);
-                        }
-                    }
-                });
+        disposable.add(
+                movieService.getMovies(sortingType)
+                        .concatMap(movies -> Observable.fromIterable(movies.getResults()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(result -> {
+                            if (view != null) {
+                                view.updateData(result);
+                            }
+                        }, error -> {
+                            if (view != null) {
+                                view.showSnackBar(error.getLocalizedMessage());
+                            }
+                        })
+        );
     }
 
     @Override
-    public void rxUnSubscribe() {
-        if (subscription != null) {
-            if (!subscription.isUnsubscribed()) {
-                subscription.unsubscribe();
-            }
-        }
-    }
-
-    @Override
-    public void setView(MainActivityMVP.View view) {
+    public void attachView(MainActivityMVP.View view) {
         this.view = view;
+    }
+
+    @Override
+    public void detachView() {
+        disposable.clear();
     }
 }
