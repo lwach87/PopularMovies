@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
@@ -18,6 +19,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.hideView;
+import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.showView;
 
 public class DetailActivity extends AppCompatActivity implements DetailActivityMVP.View {
 
@@ -38,6 +42,12 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
 
     @BindView(R.id.videos_recycler_view)
     RecyclerView videoRecyclerView;
+
+    @BindView(R.id.reviews)
+    TextView reviews;
+
+    @BindView(R.id.trailers)
+    TextView trailers;
 
     @BindView(R.id.activity_detail)
     ViewGroup rootView;
@@ -76,6 +86,24 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     @Override
     public void updateVideos(VideosResult result) {
         videosAdapter.swapData(result);
+    }
+
+    @Override
+    public void showReview(boolean show) {
+        if (show) {
+            showView(reviews);
+        } else {
+            hideView(reviews);
+        }
+    }
+
+    @Override
+    public void showTrailer(boolean show) {
+        if (show) {
+            showView(trailers);
+        } else {
+            hideView(trailers);
+        }
     }
 
     @Override

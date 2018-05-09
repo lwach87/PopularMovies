@@ -71,13 +71,24 @@
             android:id="@+id/plot_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/plot_synopsis"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_poster" />
+
+        <TextView
+            android:id="@+id/trailers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/trailers"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/plot_detail" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/videos_recycler_view"
@@ -92,7 +103,7 @@
             app:layout_constraintBottom_toTopOf="@+id/reviews"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/plot_detail" />
+            app:layout_constraintTop_toBottomOf="@+id/trailers" />
 
         <TextView
             android:id="@+id/reviews"
@@ -100,6 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/reviews"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/reviews_recycler_view"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

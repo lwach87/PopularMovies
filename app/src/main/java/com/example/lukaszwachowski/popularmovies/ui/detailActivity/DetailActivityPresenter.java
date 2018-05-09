@@ -10,8 +10,7 @@ import io.reactivex.schedulers.Schedulers;
 public class DetailActivityPresenter implements DetailActivityMVP.Presenter {
 
     private DetailActivityMVP.View view;
-    private CompositeDisposable reviewDisposable;
-    private CompositeDisposable videoDisposable;
+    private CompositeDisposable reviewDisposable, videoDisposable;
     private DetailService detailService;
 
     public DetailActivityPresenter(DetailService detailService) {
@@ -29,6 +28,9 @@ public class DetailActivityPresenter implements DetailActivityMVP.Presenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
+
+                            view.showReview(result != null);
+
                             if (view != null) {
                                 view.updateReviews(result);
                             }
@@ -45,6 +47,9 @@ public class DetailActivityPresenter implements DetailActivityMVP.Presenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
+
+                            view.showTrailer(result != null);
+
                             if (view != null) {
                                 view.updateVideos(result);
                             }

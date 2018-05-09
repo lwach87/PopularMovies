@@ -11,6 +11,10 @@ public class DetailActivityMVP {
 
         void updateVideos(VideosResult result);
 
+        void showReview(boolean show);
+
+        void showTrailer(boolean show);
+
         void showSnackBar(String text);
     }
 
