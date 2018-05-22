@@ -10,9 +10,9 @@
         android:id="@+id/author_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/author"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Author: " />
 
     <TextView
         android:id="@+id/detail_author"
@@ -21,19 +21,19 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:text="@string/detail_review"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/detail_review"
-        app:layout_constraintStart_toEndOf="@+id/author_text" />
+        app:layout_constraintStart_toEndOf="@+id/author_text"
+        tools:text="Detail review" />
 
     <TextView
         android:id="@+id/detail_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="@string/review"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="review" />
 
 </android.support.constraint.ConstraintLayout>

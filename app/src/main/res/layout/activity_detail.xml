@@ -28,9 +28,9 @@
                 android:id="@+id/title_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/original_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                tools:text="Title" />
         </LinearLayout>
 
         <ImageView
@@ -52,10 +52,10 @@
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
-            android:text="@string/release_date"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/detail_poster"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+            tools:text="Date" />
 
         <TextView
             android:id="@+id/rating_detail"
@@ -63,9 +63,20 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="32dp"
             android:layout_marginStart="32dp"
-            android:text="@string/rating"
             app:layout_constraintStart_toEndOf="@+id/detail_poster"
-            app:layout_constraintTop_toBottomOf="@+id/date_detail" />
+            app:layout_constraintTop_toBottomOf="@+id/date_detail"
+            tools:text="Rating" />
+
+        <ImageView
+            android:id="@+id/favourite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/ic_favorite_32dp"
+            app:layout_constraintStart_toEndOf="@+id/detail_poster"
+            app:layout_constraintTop_toBottomOf="@+id/rating_detail" />
 
         <TextView
             android:id="@+id/plot_detail"
@@ -74,10 +85,10 @@
             android:layout_marginTop="8dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="@string/plot_synopsis"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_poster" />
+            app:layout_constraintTop_toBottomOf="@+id/detail_poster"
+            tools:text="Plot Synopsis" />
 
         <TextView
             android:id="@+id/trailers"
