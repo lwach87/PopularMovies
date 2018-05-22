@@ -12,6 +12,7 @@ import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
 import com.example.lukaszwachowski.popularmovies.di.components.DaggerDetailActivityComponent;
 import com.example.lukaszwachowski.popularmovies.di.modules.DetailActivityModule;
+import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.network.reviews.ReviewsResult;
 import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
 
@@ -68,7 +69,9 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
 
         ButterKnife.bind(this);
         presenter.attachView(this);
-        presenter.loadData(String.valueOf(getIntent().getIntExtra("id", 1)));
+
+        MoviesResult result = getIntent().getParcelableExtra("MovieObject");
+        presenter.loadData(String.valueOf(result.getId()));
 
         videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         videoRecyclerView.setAdapter(videosAdapter);

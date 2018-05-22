@@ -1,5 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,13 +15,16 @@ import com.example.lukaszwachowski.popularmovies.R;
 import com.example.lukaszwachowski.popularmovies.di.components.DaggerMainActivityComponent;
 import com.example.lukaszwachowski.popularmovies.di.modules.MainActivityModule;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
+import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivity;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainActivityMVP.View {
+import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_OBJECT;
+
+public class MainActivity extends AppCompatActivity implements MainActivityMVP.View, ListAdapter.OnItemClickListener {
 
     @Inject
     ListAdapter listAdapter;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
 
         presenter.attachView(this);
         presenter.loadData("top_rated");
+        listAdapter.setListener(this);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.setAdapter(listAdapter);
@@ -81,6 +86,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     @Override
     public void updateData(MoviesResult result) {
         listAdapter.swapData(result);
+    }
+
+    @Override
+    public void onItemClick(MoviesResult result) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(MOVIE_OBJECT, result);
+        startActivity(intent);
     }
 
     @Override

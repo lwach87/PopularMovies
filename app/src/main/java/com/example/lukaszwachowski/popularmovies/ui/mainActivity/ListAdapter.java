@@ -1,7 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 
 import com.example.lukaszwachowski.popularmovies.R;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
-import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,22 +19,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.IMAGE_URL;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_ID;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_POSTER;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.ORIGINAL_TITLE;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.PLOT_SYNOPSIS;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.RELEASE_DATE;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.USER_RATING;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder> {
 
     private List<MoviesResult> results = new ArrayList<>();
     private Context context;
     private Picasso picasso;
+    private OnItemClickListener listener;
 
     public ListAdapter(Context context, Picasso picasso) {
         this.context = context;
         this.picasso = picasso;
+    }
+
+    public void setListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(MoviesResult result);
     }
 
     @NonNull
@@ -52,7 +53,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
 
         picasso.load(IMAGE_URL + results.get(position).getPosterPath())
                 .into(holder.image);
-
     }
 
     @Override
@@ -74,17 +74,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
 
         @Override
         public void onClick(View v) {
-
-            int position = getAdapterPosition();
-
-            Intent intent = new Intent(context, DetailActivity.class);
-            intent.putExtra(ORIGINAL_TITLE, results.get(position).getOriginalTitle());
-            intent.putExtra(MOVIE_POSTER, IMAGE_URL + results.get(position).getPosterPath());
-            intent.putExtra(PLOT_SYNOPSIS, results.get(position).getOverview());
-            intent.putExtra(USER_RATING, results.get(position).getVoteAverage());
-            intent.putExtra(RELEASE_DATE, results.get(position).getReleaseDate());
-            intent.putExtra(MOVIE_ID, results.get(position).getId());
-            context.startActivity(intent);
+            listener.onItemClick(results.get(getAdapterPosition()));
         }
     }
 

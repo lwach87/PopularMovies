@@ -1,46 +1,23 @@
 package com.example.lukaszwachowski.popularmovies.network.movies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class MoviesResult {
-
-    @SerializedName("vote_count")
-    private Integer voteCount;
+public class MoviesResult implements Parcelable {
 
     @SerializedName("id")
-    private Integer id;
-
-    @SerializedName("video")
-    private Boolean video;
+    private int id;
 
     @SerializedName("vote_average")
-    private Double voteAverage;
-
-    @SerializedName("title")
-    private String title;
-
-    @SerializedName("popularity")
-    private Double popularity;
+    private double voteAverage;
 
     @SerializedName("poster_path")
     private String posterPath;
 
-    @SerializedName("original_language")
-    private String originalLanguage;
-
     @SerializedName("original_title")
     private String originalTitle;
-
-    @SerializedName("genre_ids")
-    private List<Integer> genreIds = null;
-
-    @SerializedName("backdrop_path")
-    private String backdropPath;
-
-    @SerializedName("adult")
-    private Boolean adult;
 
     @SerializedName("overview")
     private String overview;
@@ -48,52 +25,56 @@ public class MoviesResult {
     @SerializedName("release_date")
     private String releaseDate;
 
-    public Integer getVoteCount() {
-        return voteCount;
+    protected MoviesResult(Parcel in) {
+        id = in.readInt();
+        voteAverage = in.readDouble();
+        posterPath = in.readString();
+        originalTitle = in.readString();
+        overview = in.readString();
+        releaseDate = in.readString();
     }
 
-    public Integer getId() {
+    public static final Creator<MoviesResult> CREATOR = new Creator<MoviesResult>() {
+        @Override
+        public MoviesResult createFromParcel(Parcel in) {
+            return new MoviesResult(in);
+        }
+
+        @Override
+        public MoviesResult[] newArray(int size) {
+            return new MoviesResult[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeDouble(voteAverage);
+        dest.writeString(posterPath);
+        dest.writeString(originalTitle);
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+    }
+
+    public int getId() {
         return id;
     }
 
-    public Boolean getVideo() {
-        return video;
-    }
-
-    public Double getVoteAverage() {
+    public double getVoteAverage() {
         return voteAverage;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Double getPopularity() {
-        return popularity;
     }
 
     public String getPosterPath() {
         return posterPath;
     }
 
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
     public String getOriginalTitle() {
         return originalTitle;
-    }
-
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
-
-    public String getBackdropPath() {
-        return backdropPath;
-    }
-
-    public Boolean getAdult() {
-        return adult;
     }
 
     public String getOverview() {

@@ -1,6 +1,8 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
 import com.example.lukaszwachowski.popularmovies.network.DetailService;
+import com.example.lukaszwachowski.popularmovies.network.MovieService;
+import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -12,6 +14,7 @@ public class DetailActivityPresenter implements DetailActivityMVP.Presenter {
     private DetailActivityMVP.View view;
     private CompositeDisposable reviewDisposable, videoDisposable;
     private DetailService detailService;
+    private MovieService movieService;
 
     public DetailActivityPresenter(DetailService detailService) {
         this.detailService = detailService;
@@ -59,6 +62,14 @@ public class DetailActivityPresenter implements DetailActivityMVP.Presenter {
                             }
                         })
         );
+    }
+
+    public Observable<VideosResult> result(String sortingType) {
+
+        return movieService.getMovies(sortingType)
+                .concatMap(movies -> Observable.fromIterable(movies.getResults()))
+                .concatMap(moviesResult -> detailService.getVideos(String.valueOf(moviesResult.getId()))
+                        .concatMap(videos -> Observable.fromIterable(videos.getResults())));
     }
 
     @Override
