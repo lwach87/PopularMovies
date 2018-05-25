@@ -14,4 +14,10 @@
         android:title="@string/action_popularity"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/sort_by_favourites"
+        android:orderInCategory="3"
+        android:title="@string/action_favourites"
+        app:showAsAction="never" />
+
 </menu>

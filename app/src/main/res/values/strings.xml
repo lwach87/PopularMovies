@@ -3,6 +3,7 @@
     <string name="poster_detail">poster_detail</string>
     <string name="action_rating">Top Rated</string>
     <string name="action_popularity">Popular</string>
+    <string name="action_favourites">Favourites</string>
     <string name="reviews">REVIEWS</string>
     <string name="play_icon">play_icon</string>
     <string name="trailers">TRAILERS</string>

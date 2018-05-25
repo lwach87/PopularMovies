@@ -83,6 +83,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
         notifyDataSetChanged();
     }
 
+    public void swapMovies(List<MoviesResult> entry) {
+
+        results.addAll(entry);
+        notifyDataSetChanged();
+    }
+
     public void clearData() {
         results.clear();
     }

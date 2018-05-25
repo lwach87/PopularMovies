@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
+import com.example.lukaszwachowski.popularmovies.db.MoviesRepository;
 import com.example.lukaszwachowski.popularmovies.di.components.DaggerMainActivityComponent;
 import com.example.lukaszwachowski.popularmovies.di.modules.MainActivityModule;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
 
     @Inject
     MainActivityMVP.Presenter presenter;
+
+    @Inject
+    MoviesRepository repository;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -76,6 +80,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
             case R.id.sort_by_popularity:
                 listAdapter.clearData();
                 presenter.loadData("popular");
+                return true;
+
+            case R.id.sort_by_favourites:
+                listAdapter.clearData();
+                repository.getFavouriteMovies()
+                        .observe(this, moviesResults -> listAdapter.swapMovies(moviesResults));
                 return true;
 
             default:
