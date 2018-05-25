@@ -1,14 +1,18 @@
 package com.example.lukaszwachowski.popularmovies.network.movies;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "movies")
 public class MoviesResult implements Parcelable {
 
+    @PrimaryKey
     @SerializedName("id")
-    private int id;
+    private int movieId;
 
     @SerializedName("vote_average")
     private double voteAverage;
@@ -25,13 +29,37 @@ public class MoviesResult implements Parcelable {
     @SerializedName("release_date")
     private String releaseDate;
 
+    public MoviesResult(int movieId, double voteAverage, String posterPath, String originalTitle, String overview, String releaseDate) {
+        this.movieId = movieId;
+        this.voteAverage = voteAverage;
+        this.posterPath = posterPath;
+        this.originalTitle = originalTitle;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+    }
+
     protected MoviesResult(Parcel in) {
-        id = in.readInt();
+        movieId = in.readInt();
         voteAverage = in.readDouble();
         posterPath = in.readString();
         originalTitle = in.readString();
         overview = in.readString();
         releaseDate = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(movieId);
+        dest.writeDouble(voteAverage);
+        dest.writeString(posterPath);
+        dest.writeString(originalTitle);
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<MoviesResult> CREATOR = new Creator<MoviesResult>() {
@@ -46,43 +74,51 @@ public class MoviesResult implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getMovieId() {
+        return movieId;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeDouble(voteAverage);
-        dest.writeString(posterPath);
-        dest.writeString(originalTitle);
-        dest.writeString(overview);
-        dest.writeString(releaseDate);
-    }
-
-    public int getId() {
-        return id;
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
     public double getVoteAverage() {
         return voteAverage;
     }
 
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
     public String getPosterPath() {
         return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
     public String getOriginalTitle() {
         return originalTitle;
     }
 
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
+    }
+
     public String getOverview() {
         return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
     public String getReleaseDate() {
         return releaseDate;
     }
 
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
 }
