@@ -16,8 +16,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.IMAGE_URL;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_OBJECT;
+import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.*;
 
 public class DetailAdapter extends CoordinatorLayout {
 

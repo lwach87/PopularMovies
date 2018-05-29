@@ -1,6 +1,7 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.db.MoviesRepository;
 import com.example.lukaszwachowski.popularmovies.di.components.DaggerMainActivityComponent;
 import com.example.lukaszwachowski.popularmovies.di.modules.MainActivityModule;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
@@ -24,6 +24,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_OBJECT;
+import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.POPULAR;
+import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.TOP_RATED;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.CONTENT_URI;
 
 public class MainActivity extends AppCompatActivity implements MainActivityMVP.View, ListAdapter.OnItemClickListener {
 
@@ -32,9 +35,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
 
     @Inject
     MainActivityMVP.Presenter presenter;
-
-    @Inject
-    MoviesRepository repository;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
                 .build().inject(this);
 
         presenter.attachView(this);
-        presenter.loadData("top_rated");
+        presenter.loadData(TOP_RATED);
         listAdapter.setListener(this);
 
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -74,22 +74,44 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
         switch (item.getItemId()) {
             case R.id.sort_by_rating:
                 listAdapter.clearData();
-                presenter.loadData("top_rated");
+                presenter.loadData(TOP_RATED);
                 return true;
 
             case R.id.sort_by_popularity:
                 listAdapter.clearData();
-                presenter.loadData("popular");
+                presenter.loadData(POPULAR);
                 return true;
 
             case R.id.sort_by_favourites:
                 listAdapter.clearData();
-                repository.getFavouriteMovies()
-                        .observe(this, moviesResults -> listAdapter.swapMovies(moviesResults));
+                setFavourites();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setFavourites() {
+
+        Cursor cursor = null;
+
+        try {
+            cursor = getContentResolver().query(CONTENT_URI, null, null, null, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    MoviesResult movie = new MoviesResult(cursor.getInt(1),
+                            cursor.getDouble(2), cursor.getString(3),
+                            cursor.getString(4), cursor.getString(5),
+                            cursor.getString(6));
+                    listAdapter.swapData(movie);
+                } while (cursor.moveToNext());
+            }
+
+        } finally {
+            if (cursor != null)
+                cursor.close();
         }
     }
 

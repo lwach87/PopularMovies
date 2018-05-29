@@ -1,5 +1,7 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -10,17 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.db.MoviesRepository;
 import com.example.lukaszwachowski.popularmovies.di.components.DaggerDetailActivityComponent;
 import com.example.lukaszwachowski.popularmovies.di.modules.DetailActivityModule;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.network.reviews.ReviewsResult;
 import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
-import com.example.lukaszwachowski.popularmovies.utils.AppExecutors;
 
 import javax.inject.Inject;
 
@@ -30,6 +29,14 @@ import butterknife.ButterKnife;
 import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.hideView;
 import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.showView;
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_OBJECT;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.CONTENT_URI;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_ID;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_OVERVIEW;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_POSTER;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_RELEASE_DATE;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_TITLE;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_VOTE_AVERAGE;
+import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.buildMovieUri;
 
 public class DetailActivity extends AppCompatActivity implements DetailActivityMVP.View, View.OnClickListener {
 
@@ -44,9 +51,6 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
 
     @Inject
     DetailActivityMVP.Presenter presenter;
-
-    @Inject
-    MoviesRepository repository;
 
     @BindView(R.id.reviews_recycler_view)
     RecyclerView reviewRecyclerView;
@@ -67,6 +71,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     ImageView favourite;
 
     private MoviesResult result;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +91,9 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
         presenter.attachView(this);
 
         result = getIntent().getParcelableExtra(MOVIE_OBJECT);
-        presenter.loadData(String.valueOf(result.getMovieId()));
+        id = result.getMovieId();
+        presenter.loadData(String.valueOf(id));
+        setIconFavorites();
 
         videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         videoRecyclerView.setAdapter(videosAdapter);
@@ -101,32 +108,48 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     @Override
     public void onClick(View v) {
 
-        if (isInFavourites(result.getMovieId())) {
+        if (isInFavourites(id)) {
 
-            AppExecutors.getInstance().diskIO()
-                    .execute(() -> repository.deleteMovie(repository.findMovieById(result.getMovieId())));
-            favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_grey));
+            getContentResolver().delete(CONTENT_URI, MOVIE_ID + " = ? ", new String[]{id + ""});
 
         } else {
 
-            AppExecutors.getInstance().diskIO().execute(() -> repository.insertMovie(result));
-            favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_red));
+            ContentValues values = new ContentValues();
+            values.clear();
 
+            values.put(MOVIE_ID, id);
+            values.put(MOVIE_VOTE_AVERAGE, result.getVoteAverage());
+            values.put(MOVIE_POSTER, result.getPosterPath());
+            values.put(MOVIE_TITLE, result.getOriginalTitle());
+            values.put(MOVIE_OVERVIEW, result.getOverview());
+            values.put(MOVIE_RELEASE_DATE, result.getReleaseDate());
+
+            getContentResolver().insert(CONTENT_URI, values);
+        }
+        setIconFavorites();
+    }
+
+    private void setIconFavorites() {
+        if (isInFavourites(id)) {
+            favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_red));
+        } else {
+            favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_grey));
         }
     }
 
     private boolean isInFavourites(int movieId) {
 
-        final int[] local = new int[1];
+        Cursor cursor = null;
 
-        AppExecutors.getInstance().diskIO().execute(() -> {
-            MoviesResult movieById = repository.findMovieById(movieId);
-            local[0] = (movieById == null) ? 0 : movieById.getMovieId();
-        });
-
-        Toast.makeText(this, "local =" + local[0] + " " + "movieId =" + movieId, Toast.LENGTH_SHORT).show();
-
-        return local[0] == movieId;
+        try {
+            cursor = getContentResolver().query(buildMovieUri(movieId), null, null, null, null);
+            if (cursor.moveToFirst())
+                return true;
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return false;
     }
 
     @Override
