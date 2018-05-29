@@ -26,6 +26,10 @@
             android:name=".ui.detailActivity.DetailActivity"
             android:parentActivityName=".ui.mainActivity.MainActivity"
             tools:targetApi="jelly_bean" />
+
+        <provider
+            android:name="com.example.lukaszwachowski.popularmovies.db.FavMovieProvider"
+            android:authorities="com.example.lukaszwachowski.popularmovies" />
     </application>
 
 </manifest>
