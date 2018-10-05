@@ -1,4 +1,4 @@
-Popular Movies App was created as a part of Udacity Android Developer Nanodegree Program. The application fetches movie data using [themoviedb.org](https://www.themoviedb.org/) API.
+Popular Movies App was created as a part of Udacity [Android Developer Nanodegree Program](https://eu.udacity.com/course/android-developer-nanodegree-by-google--nd801). The application fetches movie data using [themoviedb.org](https://www.themoviedb.org/) API.
 
 ## Used Libraries
 - [RxJava2](https://github.com/ReactiveX/RxJava), [RxAndroid](https://github.com/ReactiveX/RxAndroid)
