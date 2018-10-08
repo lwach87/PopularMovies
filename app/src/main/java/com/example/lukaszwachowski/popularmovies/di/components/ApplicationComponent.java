@@ -1,13 +1,16 @@
 package com.example.lukaszwachowski.popularmovies.di.components;
 
-import com.example.lukaszwachowski.popularmovies.di.ApplicationScope;
 import com.example.lukaszwachowski.popularmovies.di.modules.ContextModule;
 import com.squareup.picasso.Picasso;
-
 import dagger.Component;
+import javax.inject.Singleton;
+import retrofit2.Retrofit;
 
-@ApplicationScope
+@Singleton
 @Component(modules = ContextModule.class)
 public interface ApplicationComponent {
-    Picasso getPicasso();
+
+  Picasso getPicasso();
+
+  Retrofit getRetrofit();
 }
