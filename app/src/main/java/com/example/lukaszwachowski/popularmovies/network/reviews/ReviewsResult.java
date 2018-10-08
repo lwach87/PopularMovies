@@ -4,31 +4,17 @@ import com.google.gson.annotations.SerializedName;
 
 public class ReviewsResult {
 
-    @SerializedName("author")
-    private String author;
+  @SerializedName("author")
+  private String author;
 
-    @SerializedName("content")
-    private String content;
+  @SerializedName("content")
+  private String content;
 
-    @SerializedName("id")
-    private String id;
+  public String getAuthor() {
+    return author;
+  }
 
-    @SerializedName("url")
-    private String url;
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
+  public String getContent() {
+    return content;
+  }
 }
