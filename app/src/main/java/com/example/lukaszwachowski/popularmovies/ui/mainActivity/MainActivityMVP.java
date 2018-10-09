@@ -4,19 +4,19 @@ import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 
 public class MainActivityMVP {
 
-    interface View {
+  interface View {
 
-        void updateData(MoviesResult result);
+    void updateData(MoviesResult result);
 
-        void showSnackBar(String text);
-    }
+    void showSnackBar(String text);
+  }
 
-    public interface Presenter {
+  public interface Presenter {
 
-        void loadData(String sortingType);
+    void loadData(String sortingType);
 
-        void detachView();
+    void detachView();
 
-        void attachView(MainActivityMVP.View view);
-    }
+    void attachView(MainActivityMVP.View view);
+  }
 }
