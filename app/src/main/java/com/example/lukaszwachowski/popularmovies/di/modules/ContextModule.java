@@ -2,7 +2,11 @@ package com.example.lukaszwachowski.popularmovies.di.modules;
 
 import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.BASE_URL;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
+import com.example.lukaszwachowski.popularmovies.db.MovieDao;
+import com.example.lukaszwachowski.popularmovies.db.MoviesDatabase;
+import com.example.lukaszwachowski.popularmovies.db.Repository;
 import com.squareup.picasso.Picasso;
 import dagger.Module;
 import dagger.Provides;
@@ -30,6 +34,25 @@ public class ContextModule {
   @Singleton
   public Picasso picasso(Context context) {
     return new Picasso.Builder(context).build();
+  }
+
+  @Provides
+  @Singleton
+  public MoviesDatabase provideDatabase(Context context) {
+    return Room.databaseBuilder(context.getApplicationContext(), MoviesDatabase.class,
+        "MoviesResult").build();
+  }
+
+  @Provides
+  @Singleton
+  public MovieDao provideDao(MoviesDatabase moviesDatabase) {
+    return moviesDatabase.movieDao();
+  }
+
+  @Provides
+  @Singleton
+  public Repository repository(MovieDao movieDao) {
+    return new Repository(movieDao);
   }
 
   @Provides

@@ -1,11 +1,15 @@
 package com.example.lukaszwachowski.popularmovies.network.movies;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "movies")
 public class MoviesResult implements Parcelable {
 
+  @PrimaryKey
   @SerializedName("id")
   public int movieId;
 
@@ -24,14 +28,7 @@ public class MoviesResult implements Parcelable {
   @SerializedName("release_date")
   public String releaseDate;
 
-  public MoviesResult(int movieId, double voteAverage, String posterPath, String originalTitle,
-      String overview, String releaseDate) {
-    this.movieId = movieId;
-    this.voteAverage = voteAverage;
-    this.posterPath = posterPath;
-    this.originalTitle = originalTitle;
-    this.overview = overview;
-    this.releaseDate = releaseDate;
+  public MoviesResult() {
   }
 
   protected MoviesResult(Parcel in) {
