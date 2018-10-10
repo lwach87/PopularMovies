@@ -5,25 +5,25 @@ import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
 
 public class DetailActivityMVP {
 
-    interface View {
+  interface View {
 
-        void updateReviews(ReviewsResult result);
+    void updateReviews(ReviewsResult result);
 
-        void updateVideos(VideosResult result);
+    void updateVideos(VideosResult result);
 
-        void showReview(boolean show);
+    void showReview(boolean show);
 
-        void showTrailer(boolean show);
+    void showTrailer(boolean show);
 
-        void showSnackBar(String text);
-    }
+    void showSnackBar(String text);
+  }
 
-    public interface Presenter {
+  public interface Presenter {
 
-        void loadData(String movieId);
+    void loadData(String movieId);
 
-        void detachView();
+    void detachView();
 
-        void attachView(DetailActivityMVP.View view);
-    }
+    void attachView(DetailActivityMVP.View view);
+  }
 }

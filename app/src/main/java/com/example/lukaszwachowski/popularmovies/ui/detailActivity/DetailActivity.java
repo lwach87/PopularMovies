@@ -1,7 +1,13 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.hideView;
+import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.showView;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.IMAGE_URL;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.MOVIE_OBJECT;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.YOUTUBE_BASE_URL;
+
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -12,182 +18,178 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
+import com.example.lukaszwachowski.popularmovies.db.Repository;
 import com.example.lukaszwachowski.popularmovies.di.components.DaggerDetailActivityComponent;
 import com.example.lukaszwachowski.popularmovies.di.modules.DetailActivityModule;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.network.reviews.ReviewsResult;
 import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
-
+import com.squareup.picasso.Picasso;
+import io.reactivex.Completable;
+import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+public class DetailActivity extends AppCompatActivity implements DetailActivityMVP.View,
+    View.OnClickListener, VideoListAdapter.OnItemClickListener {
 
-import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.hideView;
-import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.showView;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_OBJECT;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.CONTENT_URI;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_ID;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_OVERVIEW;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_POSTER;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_RELEASE_DATE;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_TITLE;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.MOVIE_VOTE_AVERAGE;
-import static com.example.lukaszwachowski.popularmovies.db.FavMovieContract.MovieEntry.buildMovieUri;
+  @Inject
+  Picasso picasso;
 
-public class DetailActivity extends AppCompatActivity implements DetailActivityMVP.View, View.OnClickListener {
+  @Inject
+  ReviewListAdapter reviewsAdapter;
 
-    @Inject
-    DetailAdapter detailAdapter;
+  @Inject
+  VideoListAdapter videosAdapter;
 
-    @Inject
-    ReviewListAdapter reviewsAdapter;
+  @Inject
+  DetailActivityMVP.Presenter presenter;
 
-    @Inject
-    VideoListAdapter videosAdapter;
+  @Inject
+  Repository repository;
 
-    @Inject
-    DetailActivityMVP.Presenter presenter;
+  @BindView(R.id.reviews_recycler_view)
+  RecyclerView reviewRecyclerView;
 
-    @BindView(R.id.reviews_recycler_view)
-    RecyclerView reviewRecyclerView;
+  @BindView(R.id.videos_recycler_view)
+  RecyclerView videoRecyclerView;
 
-    @BindView(R.id.videos_recycler_view)
-    RecyclerView videoRecyclerView;
+  @BindView(R.id.reviews)
+  TextView reviews;
 
-    @BindView(R.id.reviews)
-    TextView reviews;
+  @BindView(R.id.trailers)
+  TextView trailers;
 
-    @BindView(R.id.trailers)
-    TextView trailers;
+  @BindView(R.id.activity_detail)
+  ViewGroup rootView;
 
-    @BindView(R.id.activity_detail)
-    ViewGroup rootView;
+  @BindView(R.id.favourite_button)
+  ImageView favourite;
 
-    @BindView(R.id.favourite_button)
-    ImageView favourite;
+  @BindView(R.id.title_detail)
+  TextView title_detail;
 
-    private MoviesResult result;
-    private int id;
+  @BindView(R.id.detail_poster)
+  ImageView poster_detail;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @BindView(R.id.date_detail)
+  TextView date_detail;
 
-        getSupportActionBar().setTitle("Detail Activity");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  @BindView(R.id.rating_detail)
+  TextView rating_detail;
 
-        DaggerDetailActivityComponent.builder()
-                .detailActivityModule(new DetailActivityModule(this))
-                .applicationComponent(MoviesApp.get(this).component())
-                .build().inject(this);
+  @BindView(R.id.plot_detail)
+  TextView plot_detail;
 
-        setContentView(detailAdapter);
+  private MoviesResult result;
 
-        ButterKnife.bind(this);
-        presenter.attachView(this);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_detail);
+    ButterKnife.bind(this);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        result = getIntent().getParcelableExtra(MOVIE_OBJECT);
-        id = result.getMovieId();
-        presenter.loadData(String.valueOf(id));
-        setIconFavorites();
+    DaggerDetailActivityComponent.builder()
+        .detailActivityModule(new DetailActivityModule(this))
+        .applicationComponent(MoviesApp.get(this).component())
+        .build().inject(this);
 
-        videoRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        videoRecyclerView.setAdapter(videosAdapter);
+    result = getIntent().getParcelableExtra(MOVIE_OBJECT);
 
-        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        reviewRecyclerView.setNestedScrollingEnabled(false);
-        reviewRecyclerView.setAdapter(reviewsAdapter);
+    setupUI();
 
-        favourite.setOnClickListener(this);
+    getSupportActionBar().setTitle(result.originalTitle);
+    presenter.loadData(String.valueOf(result.movieId));
+    presenter.attachView(this);
+
+    videoRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+        LinearLayoutManager.HORIZONTAL, false));
+    videoRecyclerView.setAdapter(videosAdapter);
+    videosAdapter.setListener(this);
+
+    reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    reviewRecyclerView.setAdapter(reviewsAdapter);
+
+    favourite.setOnClickListener(this);
+  }
+
+  private void setupUI() {
+    Completable.fromAction(this::setIconFavorites).subscribeOn(Schedulers.io()).subscribe();
+
+    title_detail.setText(result.originalTitle);
+    date_detail.setText(result.releaseDate);
+    rating_detail.setText(String.valueOf(result.voteAverage));
+    plot_detail.setText(result.overview);
+    picasso.load(IMAGE_URL + result.posterPath).into(poster_detail);
+  }
+
+  @Override
+  public void onClick(View v) {
+    Completable.fromAction(() -> {
+      if (repository.isInFavourites(result.movieId) == 1) {
+        repository.deleteMovie(result.movieId);
+      } else {
+        repository.insertMovie(result);
+      }
+      setIconFavorites();
+    }).subscribeOn(Schedulers.io())
+        .subscribe();
+  }
+
+  private void setIconFavorites() {
+    if (repository.isInFavourites(result.movieId) == 1) {
+      favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_red));
+    } else {
+      favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_grey));
     }
+  }
 
-    @Override
-    public void onClick(View v) {
+  @Override
+  public void onVideoClick(String key) {
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_BASE_URL + key));
+    startActivity(browserIntent);
+  }
 
-        if (isInFavourites(id)) {
+  @Override
+  public void updateReviews(ReviewsResult result) {
+    reviewsAdapter.swapData(result);
+  }
 
-            getContentResolver().delete(CONTENT_URI, MOVIE_ID + " = ? ", new String[]{id + ""});
+  @Override
+  public void updateVideos(VideosResult result) {
+    videosAdapter.swapData(result);
+  }
 
-        } else {
-
-            ContentValues values = new ContentValues();
-            values.clear();
-
-            values.put(MOVIE_ID, id);
-            values.put(MOVIE_VOTE_AVERAGE, result.getVoteAverage());
-            values.put(MOVIE_POSTER, result.getPosterPath());
-            values.put(MOVIE_TITLE, result.getOriginalTitle());
-            values.put(MOVIE_OVERVIEW, result.getOverview());
-            values.put(MOVIE_RELEASE_DATE, result.getReleaseDate());
-
-            getContentResolver().insert(CONTENT_URI, values);
-        }
-        setIconFavorites();
+  @Override
+  public void showReview(boolean show) {
+    if (show) {
+      showView(reviews);
+    } else {
+      hideView(reviews);
     }
+  }
 
-    private void setIconFavorites() {
-        if (isInFavourites(id)) {
-            favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_red));
-        } else {
-            favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_grey));
-        }
+  @Override
+  public void showTrailer(boolean show) {
+    if (show) {
+      showView(trailers);
+    } else {
+      hideView(trailers);
     }
+  }
 
-    private boolean isInFavourites(int movieId) {
+  @Override
+  public void showSnackBar(String text) {
+    Snackbar.make(rootView, text, Snackbar.LENGTH_SHORT).show();
+  }
 
-        Cursor cursor = null;
-
-        try {
-            cursor = getContentResolver().query(buildMovieUri(movieId), null, null, null, null);
-            if (cursor.moveToFirst())
-                return true;
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-        return false;
-    }
-
-    @Override
-    public void updateReviews(ReviewsResult result) {
-        reviewsAdapter.swapData(result);
-    }
-
-    @Override
-    public void updateVideos(VideosResult result) {
-        videosAdapter.swapData(result);
-    }
-
-    @Override
-    public void showReview(boolean show) {
-        if (show) {
-            showView(reviews);
-        } else {
-            hideView(reviews);
-        }
-    }
-
-    @Override
-    public void showTrailer(boolean show) {
-        if (show) {
-            showView(trailers);
-        } else {
-            hideView(trailers);
-        }
-    }
-
-    @Override
-    public void showSnackBar(String text) {
-        Snackbar.make(rootView, text, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
-    }
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    presenter.detachView();
+  }
 }
