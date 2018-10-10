@@ -1,6 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.IMAGE_URL;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.IMAGE_URL;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

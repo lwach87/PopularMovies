@@ -1,8 +1,8 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.MOVIE_OBJECT;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.POPULAR;
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.TOP_RATED;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.MOVIE_OBJECT;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.POPULAR;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.TOP_RATED;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -118,7 +118,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
           for (MoviesResult movie : moviesResults) {
             listAdapter.swapData(movie);
           }
-        }));
+        }, error -> Snackbar.make(rootView, error.getLocalizedMessage(), Snackbar.LENGTH_SHORT)
+            .show()));
   }
 
   @Override

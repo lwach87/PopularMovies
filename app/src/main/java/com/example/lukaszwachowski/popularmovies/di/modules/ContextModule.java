@@ -1,6 +1,7 @@
 package com.example.lukaszwachowski.popularmovies.di.modules;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.BASE_URL;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.BASE_URL;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.DATABASE_NAME;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
@@ -40,7 +41,7 @@ public class ContextModule {
   @Singleton
   public MoviesDatabase provideDatabase(Context context) {
     return Room.databaseBuilder(context.getApplicationContext(), MoviesDatabase.class,
-        "MoviesResult").build();
+        DATABASE_NAME).build();
   }
 
   @Provides

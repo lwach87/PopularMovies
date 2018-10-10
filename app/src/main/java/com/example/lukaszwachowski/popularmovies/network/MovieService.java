@@ -1,6 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.network;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.NetworkUtils.API_KEY;
+import static com.example.lukaszwachowski.popularmovies.configuration.Constants.API_KEY;
 
 import com.example.lukaszwachowski.popularmovies.network.movies.Movies;
 import io.reactivex.Observable;
