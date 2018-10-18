@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
         .build().inject(this);
 
     presenter.attachView(this);
-    presenter.loadData(TOP_RATED);
     listAdapter.setListener(this);
+    presenter.loadData(TOP_RATED);
 
     recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
     recyclerView.setAdapter(listAdapter);
@@ -128,10 +128,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
   }
 
   @Override
-  public void onItemClick(MoviesResult result) {
+  public void onItemClick(MoviesResult result, Bundle bundle) {
     Intent intent = new Intent(this, DetailActivity.class);
     intent.putExtra(MOVIE_OBJECT, result);
-    startActivity(intent);
+    startActivity(intent, bundle);
   }
 
   @Override

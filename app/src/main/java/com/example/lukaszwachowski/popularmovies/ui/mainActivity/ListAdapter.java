@@ -2,9 +2,11 @@ package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
 import static com.example.lukaszwachowski.popularmovies.configuration.Constants.IMAGE_URL;
 
-import android.content.Context;
+import android.app.ActivityOptions;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +22,12 @@ import java.util.List;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder> {
 
   private List<MoviesResult> results = new ArrayList<>();
-  private Context context;
+  private MainActivity activity;
   private Picasso picasso;
   private OnItemClickListener listener;
 
-  public ListAdapter(Context context, Picasso picasso) {
-    this.context = context;
+  public ListAdapter(MainActivity activity, Picasso picasso) {
+    this.activity = activity;
     this.picasso = picasso;
   }
 
@@ -35,13 +37,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
 
   public interface OnItemClickListener {
 
-    void onItemClick(MoviesResult result);
+    void onItemClick(MoviesResult result, Bundle bundle);
   }
 
   @NonNull
   @Override
   public ListAdapter.DataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(context)
+    View view = LayoutInflater.from(activity)
         .inflate(R.layout.single_item, parent, false);
     return new DataViewHolder(view);
   }
@@ -72,7 +74,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
 
     @Override
     public void onClick(View v) {
-      listener.onItemClick(results.get(getAdapterPosition()));
+      Bundle bundle = ActivityOptions
+          .makeSceneTransitionAnimation(activity, Pair.create(image, "image")).toBundle();
+      listener.onItemClick(results.get(getAdapterPosition()), bundle);
     }
   }
 
