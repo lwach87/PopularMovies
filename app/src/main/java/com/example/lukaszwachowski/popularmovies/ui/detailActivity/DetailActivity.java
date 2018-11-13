@@ -20,15 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
 import com.example.lukaszwachowski.popularmovies.db.Repository;
-import com.example.lukaszwachowski.popularmovies.di.components.DaggerDetailActivityComponent;
-import com.example.lukaszwachowski.popularmovies.di.modules.DetailActivityModule;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.network.reviews.ReviewsResult;
 import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
 import com.squareup.picasso.Picasso;
+import dagger.android.AndroidInjection;
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
@@ -93,10 +91,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     ButterKnife.bind(this);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    DaggerDetailActivityComponent.builder()
-        .detailActivityModule(new DetailActivityModule(this))
-        .applicationComponent(MoviesApp.get(this).component())
-        .build().inject(this);
+    AndroidInjection.inject(this);
 
     result = getIntent().getParcelableExtra(MOVIE_OBJECT);
 

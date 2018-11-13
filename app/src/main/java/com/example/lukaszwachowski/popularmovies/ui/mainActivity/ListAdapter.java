@@ -43,8 +43,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
   @NonNull
   @Override
   public ListAdapter.DataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(activity)
-        .inflate(R.layout.single_item, parent, false);
+    View view = LayoutInflater.from(activity).inflate(R.layout.single_item, parent, false);
     return new DataViewHolder(view);
   }
 

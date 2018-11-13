@@ -2,7 +2,6 @@ package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
 import static com.example.lukaszwachowski.popularmovies.configuration.Constants.YOUTUBE_IMG;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,12 +19,10 @@ import java.util.List;
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.ViewHolder> {
 
   private List<VideosResult> list = new ArrayList<>();
-  private Context context;
   private Picasso picasso;
   private OnItemClickListener listener;
 
-  public VideoListAdapter(Context context, Picasso picasso) {
-    this.context = context;
+  public VideoListAdapter(Picasso picasso) {
     this.picasso = picasso;
   }
 
@@ -41,7 +38,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
   @NonNull
   @Override
   public VideoListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(context)
+    View view = LayoutInflater.from(parent.getContext())
         .inflate(R.layout.single_video_item, parent, false);
     return new VideoListAdapter.ViewHolder(view);
   }

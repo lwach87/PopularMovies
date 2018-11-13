@@ -3,6 +3,7 @@ package com.example.lukaszwachowski.popularmovies.di.modules;
 import static com.example.lukaszwachowski.popularmovies.configuration.Constants.BASE_URL;
 import static com.example.lukaszwachowski.popularmovies.configuration.Constants.DATABASE_NAME;
 
+import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import com.example.lukaszwachowski.popularmovies.db.MovieDao;
@@ -17,18 +18,12 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class ContextModule {
-
-  private Context context;
-
-  public ContextModule(Context context) {
-    this.context = context;
-  }
+public class AppModule {
 
   @Provides
   @Singleton
-  public Context context() {
-    return context;
+  public Context provideContext(Application application) {
+    return application;
   }
 
   @Provides
@@ -40,7 +35,7 @@ public class ContextModule {
   @Provides
   @Singleton
   public MoviesDatabase provideDatabase(Context context) {
-    return Room.databaseBuilder(context.getApplicationContext(), MoviesDatabase.class,
+    return Room.databaseBuilder(context, MoviesDatabase.class,
         DATABASE_NAME).build();
   }
 
