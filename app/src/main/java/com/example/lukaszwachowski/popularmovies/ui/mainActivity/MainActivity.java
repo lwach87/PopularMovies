@@ -16,13 +16,11 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.example.lukaszwachowski.popularmovies.MoviesApp;
 import com.example.lukaszwachowski.popularmovies.R;
 import com.example.lukaszwachowski.popularmovies.db.Repository;
-import com.example.lukaszwachowski.popularmovies.di.components.DaggerMainActivityComponent;
-import com.example.lukaszwachowski.popularmovies.di.modules.MainActivityModule;
 import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivity;
+import dagger.android.AndroidInjection;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -54,10 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
 
-    DaggerMainActivityComponent.builder()
-        .mainActivityModule(new MainActivityModule(this))
-        .applicationComponent(MoviesApp.get(this).component())
-        .build().inject(this);
+    AndroidInjection.inject(this);
 
     presenter.attachView(this);
     listAdapter.setListener(this);

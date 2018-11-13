@@ -2,28 +2,30 @@ package com.example.lukaszwachowski.popularmovies;
 
 import android.app.Activity;
 import android.app.Application;
-import com.example.lukaszwachowski.popularmovies.di.components.ApplicationComponent;
-import com.example.lukaszwachowski.popularmovies.di.components.DaggerApplicationComponent;
-import com.example.lukaszwachowski.popularmovies.di.modules.ContextModule;
+import com.example.lukaszwachowski.popularmovies.di.components.DaggerAppComponent;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
+import javax.inject.Inject;
 
-public class MoviesApp extends Application {
+public class MoviesApp extends Application implements HasActivityInjector {
 
-  private ApplicationComponent component;
+  @Inject
+  DispatchingAndroidInjector<Activity> activityDispatchingAndroidInjector;
 
-  public static MoviesApp get(Activity activity) {
-    return (MoviesApp) activity.getApplication();
+  @Override
+  public AndroidInjector<Activity> activityInjector() {
+    return activityDispatchingAndroidInjector;
   }
 
   @Override
   public void onCreate() {
     super.onCreate();
 
-    component = DaggerApplicationComponent.builder()
-        .contextModule(new ContextModule(this))
-        .build();
-  }
-
-  public ApplicationComponent component() {
-    return component;
+    DaggerAppComponent
+        .builder()
+        .application(this)
+        .build()
+        .inject(this);
   }
 }
