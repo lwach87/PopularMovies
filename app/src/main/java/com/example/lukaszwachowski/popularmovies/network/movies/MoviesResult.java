@@ -22,6 +22,9 @@ public class MoviesResult implements Parcelable {
   @SerializedName("original_title")
   public String originalTitle;
 
+  @SerializedName("backdrop_path")
+  public String backdropPath;
+
   @SerializedName("overview")
   public String overview;
 
@@ -36,23 +39,25 @@ public class MoviesResult implements Parcelable {
     voteAverage = in.readDouble();
     posterPath = in.readString();
     originalTitle = in.readString();
+    backdropPath = in.readString();
     overview = in.readString();
     releaseDate = in.readString();
   }
 
   @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    dest.writeInt(movieId);
-    dest.writeDouble(voteAverage);
-    dest.writeString(posterPath);
-    dest.writeString(originalTitle);
-    dest.writeString(overview);
-    dest.writeString(releaseDate);
+  public int describeContents() {
+    return 0;
   }
 
   @Override
-  public int describeContents() {
-    return 0;
+  public void writeToParcel(Parcel parcel, int i) {
+    parcel.writeInt(movieId);
+    parcel.writeDouble(voteAverage);
+    parcel.writeString(posterPath);
+    parcel.writeString(originalTitle);
+    parcel.writeString(backdropPath);
+    parcel.writeString(overview);
+    parcel.writeString(releaseDate);
   }
 
   public static final Creator<MoviesResult> CREATOR = new Creator<MoviesResult>() {

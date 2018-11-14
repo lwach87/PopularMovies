@@ -9,11 +9,13 @@ import static com.example.lukaszwachowski.popularmovies.configuration.Constants.
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -49,6 +51,9 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
   @Inject
   Repository repository;
 
+  @BindView(R.id.details_toolbar)
+  Toolbar toolbar;
+
   @BindView(R.id.reviews_recycler_view)
   RecyclerView reviewRecyclerView;
 
@@ -67,10 +72,13 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
   @BindView(R.id.favourite_button)
   ImageView favourite;
 
+  @BindView(R.id.iv_backdrop)
+  ImageView backdrop_poster;
+
   @BindView(R.id.title_detail)
   TextView title_detail;
 
-  @BindView(R.id.detail_poster)
+  @BindView(R.id.iv_detail_poster)
   ImageView poster_detail;
 
   @BindView(R.id.date_detail)
@@ -82,6 +90,9 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
   @BindView(R.id.plot_detail)
   TextView plot_detail;
 
+  @BindView(R.id.details_toolbar_collapsing)
+  CollapsingToolbarLayout detailsCollapsingToolbar;
+
   private MoviesResult result;
 
   @Override
@@ -89,15 +100,25 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_detail);
     ButterKnife.bind(this);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     AndroidInjection.inject(this);
 
     result = getIntent().getParcelableExtra(MOVIE_OBJECT);
 
+    if (toolbar != null) {
+      setSupportActionBar(toolbar);
+      getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+      toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+      toolbar.setNavigationOnClickListener(view -> onBackPressed());
+    }
+
+    if (detailsCollapsingToolbar != null) {
+      detailsCollapsingToolbar.setTitle(result.originalTitle);
+    }
+
     setupUI();
 
-    getSupportActionBar().setTitle(result.originalTitle);
     presenter.loadData(String.valueOf(result.movieId));
     presenter.attachView(this);
 
@@ -120,6 +141,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     rating_detail.setText(String.valueOf(result.voteAverage));
     plot_detail.setText(result.overview);
     picasso.load(IMAGE_URL + result.posterPath).into(poster_detail);
+    picasso.load(IMAGE_URL + result.backdropPath).into(backdrop_poster);
   }
 
   @Override
