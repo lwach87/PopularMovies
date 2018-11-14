@@ -10,10 +10,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.lukaszwachowski.popularmovies.R;
@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
   @BindView(R.id.activity_main)
   ViewGroup rootView;
 
+  @BindInt(R.integer.list_column_count)
+  int columnCount;
+
   private CompositeDisposable disposable = new CompositeDisposable();
 
   @Override
@@ -58,20 +61,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     listAdapter.setListener(this);
     presenter.loadData(TOP_RATED);
 
-    recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
+    recyclerView.setLayoutManager(new GridLayoutManager(this, columnCount));
     recyclerView.setAdapter(listAdapter);
-  }
-
-  private int numberOfColumns() {
-    DisplayMetrics displayMetrics = new DisplayMetrics();
-    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    int widthDivider = 400;
-    int width = displayMetrics.widthPixels;
-    int nColumns = width / widthDivider;
-    if (nColumns < 2) {
-      return 2; //to keep the grid aspect
-    }
-    return nColumns;
   }
 
   @Override
