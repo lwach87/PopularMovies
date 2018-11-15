@@ -1,7 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.di.modules;
 
 import com.example.lukaszwachowski.popularmovies.network.DetailService;
-import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivity;
 import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivityMVP;
 import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivityPresenter;
 import com.example.lukaszwachowski.popularmovies.ui.detailActivity.ReviewListAdapter;
