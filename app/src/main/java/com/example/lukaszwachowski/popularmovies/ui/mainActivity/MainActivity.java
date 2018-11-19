@@ -1,50 +1,39 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.MOVIE_OBJECT;
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.POPULAR;
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.TOP_RATED;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.MOVIE_OBJECT;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.POPULAR;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.TOP_RATED;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.db.Repository;
-import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
+import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
+import com.example.lukaszwachowski.popularmovies.ui.base.BaseActivity;
 import com.example.lukaszwachowski.popularmovies.ui.detailActivity.DetailActivity;
-import dagger.android.AndroidInjection;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity implements MainActivityMVP.View,
+public class MainActivity extends BaseActivity<MainViewModel> implements
     ListAdapter.OnItemClickListener {
 
   @Inject
   ListAdapter listAdapter;
 
   @Inject
-  MainActivityMVP.Presenter presenter;
-
-  @Inject
-  Repository repository;
+  ViewModelProvider.Factory viewModelFactory;
 
   @BindView(R.id.recycler_view)
   RecyclerView recyclerView;
 
-  @BindView(R.id.activity_main)
-  ViewGroup rootView;
-
-  private CompositeDisposable disposable = new CompositeDisposable();
+  private MainViewModel viewModel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +41,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
 
-    AndroidInjection.inject(this);
+    viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel.class);
 
-    presenter.attachView(this);
+    viewModel.fetchMovies(TOP_RATED);
+    subscribeToLiveData();
+
     listAdapter.setListener(this);
-    presenter.loadData(TOP_RATED);
 
     recyclerView.setLayoutManager(new GridLayoutManager(this, columnCount(210)));
     recyclerView.setAdapter(listAdapter);
@@ -82,17 +72,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     switch (item.getItemId()) {
       case R.id.sort_by_rating:
         listAdapter.clearData();
-        presenter.loadData(TOP_RATED);
+        viewModel.fetchMovies(TOP_RATED);
         return true;
 
       case R.id.sort_by_popularity:
         listAdapter.clearData();
-        presenter.loadData(POPULAR);
+        viewModel.fetchMovies(POPULAR);
         return true;
 
       case R.id.sort_by_favourites:
         listAdapter.clearData();
-        setFavourites();
+        viewModel.setFavourites();
         return true;
 
       default:
@@ -100,21 +90,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     }
   }
 
-  private void setFavourites() {
-    disposable.add(repository.getAllMovies()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(moviesResults -> {
-          for (MoviesResult movie : moviesResults) {
-            listAdapter.swapData(movie);
-          }
-        }, error -> Snackbar.make(rootView, error.getLocalizedMessage(), Snackbar.LENGTH_SHORT)
-            .show()));
-  }
-
-  @Override
-  public void updateData(MoviesResult result) {
-    listAdapter.swapData(result);
+  private void subscribeToLiveData() {
+    viewModel.getMoviesLiveData()
+        .observe(this, moviesResults -> listAdapter.swapData(moviesResults));
   }
 
   @Override
@@ -122,17 +100,5 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     Intent intent = new Intent(this, DetailActivity.class);
     intent.putExtra(MOVIE_OBJECT, result);
     startActivity(intent, bundle);
-  }
-
-  @Override
-  public void showSnackBar(String text) {
-    Snackbar.make(rootView, text, Snackbar.LENGTH_SHORT).show();
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    presenter.detachView();
-    disposable.clear();
   }
 }
