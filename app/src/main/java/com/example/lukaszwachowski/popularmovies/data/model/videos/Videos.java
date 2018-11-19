@@ -1,4 +1,4 @@
-package com.example.lukaszwachowski.popularmovies.network.videos;
+package com.example.lukaszwachowski.popularmovies.data.model.videos;
 
 import java.util.List;
 
