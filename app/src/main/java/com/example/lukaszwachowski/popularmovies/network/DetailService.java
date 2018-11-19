@@ -1,9 +1,9 @@
 package com.example.lukaszwachowski.popularmovies.network;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.API_KEY;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.API_KEY;
 
-import com.example.lukaszwachowski.popularmovies.network.reviews.Reviews;
-import com.example.lukaszwachowski.popularmovies.network.videos.Videos;
+import com.example.lukaszwachowski.popularmovies.data.model.reviews.Reviews;
+import com.example.lukaszwachowski.popularmovies.data.model.videos.Videos;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
