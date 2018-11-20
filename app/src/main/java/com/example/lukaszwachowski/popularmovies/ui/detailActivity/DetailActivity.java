@@ -1,18 +1,16 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.hideView;
-import static com.example.lukaszwachowski.popularmovies.configuration.ConfigureView.showView;
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.IMAGE_URL;
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.MOVIE_OBJECT;
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.YOUTUBE_BASE_URL;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.IMAGE_URL;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.MOVIE_OBJECT;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.YOUTUBE_BASE_URL;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,17 +21,14 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.db.Repository;
-import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
-import com.example.lukaszwachowski.popularmovies.network.reviews.ReviewsResult;
-import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
+import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
+import com.example.lukaszwachowski.popularmovies.ui.base.BaseActivity;
 import com.squareup.picasso.Picasso;
-import dagger.android.AndroidInjection;
 import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 
-public class DetailActivity extends AppCompatActivity implements DetailActivityMVP.View,
+public class DetailActivity extends BaseActivity<DetailViewModel> implements
     View.OnClickListener, VideoListAdapter.OnItemClickListener {
 
   @Inject
@@ -46,10 +41,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
   VideoListAdapter videosAdapter;
 
   @Inject
-  DetailActivityMVP.Presenter presenter;
-
-  @Inject
-  Repository repository;
+  ViewModelProvider.Factory viewModelFactory;
 
   @BindView(R.id.details_toolbar)
   Toolbar toolbar;
@@ -94,6 +86,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
   CollapsingToolbarLayout detailsCollapsingToolbar;
 
   private MoviesResult result;
+  private DetailViewModel viewModel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +94,9 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     setContentView(R.layout.activity_detail);
     ButterKnife.bind(this);
 
-    AndroidInjection.inject(this);
-
     result = getIntent().getParcelableExtra(MOVIE_OBJECT);
+
+    viewModel = ViewModelProviders.of(this, viewModelFactory).get(DetailViewModel.class);
 
     if (toolbar != null) {
       setSupportActionBar(toolbar);
@@ -114,13 +107,13 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     }
 
     if (detailsCollapsingToolbar != null) {
-      detailsCollapsingToolbar.setTitle(result.originalTitle);
+      detailsCollapsingToolbar.setTitle(result.getOriginalTitle());
     }
 
     setupUI();
 
-    presenter.loadData(String.valueOf(result.movieId));
-    presenter.attachView(this);
+    viewModel.fetchVideos(String.valueOf(result.getMovieId()), trailers);
+    viewModel.fetchReviews(String.valueOf(result.getMovieId()), reviews);
 
     videoRecyclerView.setLayoutManager(new LinearLayoutManager(this,
         LinearLayoutManager.HORIZONTAL, false));
@@ -131,26 +124,28 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
     reviewRecyclerView.setAdapter(reviewsAdapter);
 
     favourite.setOnClickListener(this);
+
+    subscribeToLiveData();
   }
 
   private void setupUI() {
     Completable.fromAction(this::setIconFavorites).subscribeOn(Schedulers.io()).subscribe();
 
-    title_detail.setText(result.originalTitle);
-    date_detail.setText(result.releaseDate);
-    rating_detail.setText(String.valueOf(result.voteAverage));
-    plot_detail.setText(result.overview);
-    picasso.load(IMAGE_URL + result.posterPath).into(poster_detail);
-    picasso.load(IMAGE_URL + result.backdropPath).into(backdrop_poster);
+    title_detail.setText(result.getOriginalTitle());
+    date_detail.setText(result.getReleaseDate());
+    rating_detail.setText(String.valueOf(result.getVoteAverage()));
+    plot_detail.setText(result.getOverview());
+    picasso.load(IMAGE_URL + result.getPosterPath()).into(poster_detail);
+    picasso.load(IMAGE_URL + result.getBackdropPath()).into(backdrop_poster);
   }
 
   @Override
   public void onClick(View v) {
     Completable.fromAction(() -> {
-      if (repository.isInFavourites(result.movieId) == 1) {
-        repository.deleteMovie(result.movieId);
+      if (viewModel.isInFavourites(result.getMovieId()) == 1) {
+        viewModel.deleteMovie(result.getMovieId());
       } else {
-        repository.insertMovie(result);
+        viewModel.insertMovie(result);
       }
       setIconFavorites();
     }).subscribeOn(Schedulers.io())
@@ -158,55 +153,23 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityM
   }
 
   private void setIconFavorites() {
-    if (repository.isInFavourites(result.movieId) == 1) {
+    if (viewModel.isInFavourites(result.getMovieId()) == 1) {
       favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_red));
     } else {
       favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_grey));
     }
   }
 
+  private void subscribeToLiveData() {
+    viewModel.getVideosLiveData()
+        .observe(this, videosResults -> videosAdapter.swapData(videosResults));
+    viewModel.getReviewsLiveData()
+        .observe(this, reviewsResults -> reviewsAdapter.swapData(reviewsResults));
+  }
+
   @Override
   public void onVideoClick(String key) {
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_BASE_URL + key));
     startActivity(browserIntent);
-  }
-
-  @Override
-  public void updateReviews(ReviewsResult result) {
-    reviewsAdapter.swapData(result);
-  }
-
-  @Override
-  public void updateVideos(VideosResult result) {
-    videosAdapter.swapData(result);
-  }
-
-  @Override
-  public void showReview(boolean show) {
-    if (show) {
-      showView(reviews);
-    } else {
-      hideView(reviews);
-    }
-  }
-
-  @Override
-  public void showTrailer(boolean show) {
-    if (show) {
-      showView(trailers);
-    } else {
-      hideView(trailers);
-    }
-  }
-
-  @Override
-  public void showSnackBar(String text) {
-    Snackbar.make(rootView, text, Snackbar.LENGTH_SHORT).show();
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    presenter.detachView();
   }
 }

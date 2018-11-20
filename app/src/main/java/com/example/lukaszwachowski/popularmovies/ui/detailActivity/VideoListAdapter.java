@@ -1,6 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.YOUTUBE_IMG;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.YOUTUBE_IMG;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.network.videos.VideosResult;
+import com.example.lukaszwachowski.popularmovies.data.model.videos.VideosResult;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +73,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     }
   }
 
-  public void swapData(VideosResult result) {
-    list.add(result);
+  public void swapData(List<VideosResult> newResult) {
+    list.addAll(newResult);
     notifyDataSetChanged();
   }
 }
