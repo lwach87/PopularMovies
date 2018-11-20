@@ -2,7 +2,6 @@ package com.example.lukaszwachowski.popularmovies.data.local;
 
 import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,23 +22,17 @@ public class AppDbHelper implements DbHelper {
   }
 
   @Override
-  public Observable<Integer> isInFavourites(int id) {
-    return Observable.fromCallable(() -> moviesDatabase.movieDao().isInFavourites(id));
+  public int isInFavourites(int id) {
+    return moviesDatabase.movieDao().isInFavourites(id);
   }
 
   @Override
-  public Observable<Boolean> insertMovie(MoviesResult moviesResult) {
-    return Observable.fromCallable(() -> {
-      moviesDatabase.movieDao().insertMovie(moviesResult);
-      return true;
-    });
+  public void insertMovie(MoviesResult moviesResult) {
+    moviesDatabase.movieDao().insertMovie(moviesResult);
   }
 
   @Override
-  public Observable<Boolean> deleteMovie(int id) {
-    return Observable.fromCallable(() -> {
-      moviesDatabase.movieDao().deleteMovie(id);
-      return true;
-    });
+  public void deleteMovie(int id) {
+    moviesDatabase.movieDao().deleteMovie(id);
   }
 }

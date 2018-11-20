@@ -4,5 +4,9 @@ import java.util.List;
 
 public class Videos {
 
-  public List<VideosResult> results = null;
+  private List<VideosResult> results = null;
+
+  public List<VideosResult> getResults() {
+    return results;
+  }
 }

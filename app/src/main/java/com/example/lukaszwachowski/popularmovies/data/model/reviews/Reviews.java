@@ -4,5 +4,9 @@ import java.util.List;
 
 public class Reviews {
 
-  public List<ReviewsResult> results = null;
+  private List<ReviewsResult> results = null;
+
+  public List<ReviewsResult> getResults() {
+    return results;
+  }
 }

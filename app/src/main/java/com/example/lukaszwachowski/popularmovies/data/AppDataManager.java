@@ -30,18 +30,18 @@ public class AppDataManager implements DataManager {
   }
 
   @Override
-  public Observable<Integer> isInFavourites(int id) {
+  public int isInFavourites(int id) {
     return dbHelper.isInFavourites(id);
   }
 
   @Override
-  public Observable<Boolean> insertMovie(MoviesResult moviesResult) {
-    return dbHelper.insertMovie(moviesResult);
+  public void insertMovie(MoviesResult moviesResult) {
+    dbHelper.insertMovie(moviesResult);
   }
 
   @Override
-  public Observable<Boolean> deleteMovie(int id) {
-    return dbHelper.deleteMovie(id);
+  public void deleteMovie(int id) {
+    dbHelper.deleteMovie(id);
   }
 
   @Override
