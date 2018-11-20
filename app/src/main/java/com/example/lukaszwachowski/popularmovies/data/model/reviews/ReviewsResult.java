@@ -1,4 +1,4 @@
-package com.example.lukaszwachowski.popularmovies.network.reviews;
+package com.example.lukaszwachowski.popularmovies.data.model.reviews;
 
 public class ReviewsResult {
 

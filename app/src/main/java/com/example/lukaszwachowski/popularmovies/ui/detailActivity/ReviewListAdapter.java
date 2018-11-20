@@ -9,7 +9,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.network.reviews.ReviewsResult;
+import com.example.lukaszwachowski.popularmovies.data.model.reviews.ReviewsResult;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +54,8 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Vi
     }
   }
 
-  public void swapData(ReviewsResult result) {
-    list.add(result);
+  public void swapData(List<ReviewsResult> newResult) {
+    list.addAll(newResult);
     notifyDataSetChanged();
   }
 }

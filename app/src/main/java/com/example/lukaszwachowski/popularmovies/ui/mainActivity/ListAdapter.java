@@ -1,6 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.ui.mainActivity;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.IMAGE_URL;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.IMAGE_URL;
 
 import android.app.ActivityOptions;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.lukaszwachowski.popularmovies.R;
-import com.example.lukaszwachowski.popularmovies.network.movies.MoviesResult;
+import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
   @Override
   public void onBindViewHolder(@NonNull DataViewHolder holder, int position) {
 
-    picasso.load(IMAGE_URL + results.get(position).posterPath)
+    picasso.load(IMAGE_URL + results.get(position).getPosterPath())
         .into(holder.image);
   }
 
@@ -79,8 +79,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.DataViewHolder
     }
   }
 
-  public void swapData(MoviesResult result) {
-    results.add(result);
+  public void swapData(List<MoviesResult> newResults) {
+    results.addAll(newResults);
     notifyDataSetChanged();
   }
 

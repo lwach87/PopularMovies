@@ -1,30 +1,31 @@
 package com.example.lukaszwachowski.popularmovies.di.modules;
 
-import com.example.lukaszwachowski.popularmovies.network.MovieService;
+import android.arch.lifecycle.ViewModelProvider;
+import com.example.lukaszwachowski.popularmovies.ViewModelProviderFactory;
+import com.example.lukaszwachowski.popularmovies.data.DataManager;
 import com.example.lukaszwachowski.popularmovies.ui.mainActivity.ListAdapter;
 import com.example.lukaszwachowski.popularmovies.ui.mainActivity.MainActivity;
-import com.example.lukaszwachowski.popularmovies.ui.mainActivity.MainActivityMVP;
-import com.example.lukaszwachowski.popularmovies.ui.mainActivity.MainActivityPresenter;
+import com.example.lukaszwachowski.popularmovies.ui.mainActivity.MainViewModel;
+import com.example.lukaszwachowski.popularmovies.utils.rx.SchedulerProvider;
 import com.squareup.picasso.Picasso;
 import dagger.Module;
 import dagger.Provides;
-import retrofit2.Retrofit;
 
 @Module
 public class MainActivityModule {
 
   @Provides
-  public ListAdapter listAdapter(MainActivity mainActivity, Picasso picasso) {
+  ListAdapter listAdapter(MainActivity mainActivity, Picasso picasso) {
     return new ListAdapter(mainActivity, picasso);
   }
 
   @Provides
-  public MovieService movieService(Retrofit retrofit) {
-    return retrofit.create(MovieService.class);
+  MainViewModel provideMainViewModel(DataManager dataManager, SchedulerProvider schedulerProvider) {
+    return new MainViewModel(dataManager, schedulerProvider);
   }
 
   @Provides
-  public MainActivityMVP.Presenter providePresenter(MovieService movieService) {
-    return new MainActivityPresenter(movieService);
+  ViewModelProvider.Factory mainViewModelProvider(MainViewModel mainViewModel) {
+    return new ViewModelProviderFactory<>(mainViewModel);
   }
 }

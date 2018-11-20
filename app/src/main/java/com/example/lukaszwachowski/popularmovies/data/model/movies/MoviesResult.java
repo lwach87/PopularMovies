@@ -1,4 +1,4 @@
-package com.example.lukaszwachowski.popularmovies.network.movies;
+package com.example.lukaszwachowski.popularmovies.data.model.movies;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
@@ -11,25 +11,81 @@ public class MoviesResult implements Parcelable {
 
   @PrimaryKey
   @SerializedName("id")
-  public int movieId;
+  private int movieId;
 
   @SerializedName("vote_average")
-  public double voteAverage;
+  private double voteAverage;
 
   @SerializedName("poster_path")
-  public String posterPath;
+  private String posterPath;
 
   @SerializedName("original_title")
-  public String originalTitle;
+  private String originalTitle;
 
   @SerializedName("backdrop_path")
-  public String backdropPath;
+  private String backdropPath;
 
   @SerializedName("overview")
-  public String overview;
+  private String overview;
 
   @SerializedName("release_date")
-  public String releaseDate;
+  private String releaseDate;
+
+  public int getMovieId() {
+    return movieId;
+  }
+
+  public void setMovieId(int movieId) {
+    this.movieId = movieId;
+  }
+
+  public double getVoteAverage() {
+    return voteAverage;
+  }
+
+  public void setVoteAverage(double voteAverage) {
+    this.voteAverage = voteAverage;
+  }
+
+  public String getPosterPath() {
+    return posterPath;
+  }
+
+  public void setPosterPath(String posterPath) {
+    this.posterPath = posterPath;
+  }
+
+  public String getOriginalTitle() {
+    return originalTitle;
+  }
+
+  public void setOriginalTitle(String originalTitle) {
+    this.originalTitle = originalTitle;
+  }
+
+  public String getBackdropPath() {
+    return backdropPath;
+  }
+
+  public void setBackdropPath(String backdropPath) {
+    this.backdropPath = backdropPath;
+  }
+
+  public String getOverview() {
+    return overview;
+  }
+
+  public void setOverview(String overview) {
+    this.overview = overview;
+  }
+
+  public String getReleaseDate() {
+    return releaseDate;
+  }
+
+  public void setReleaseDate(String releaseDate) {
+    this.releaseDate = releaseDate;
+  }
 
   public MoviesResult() {
   }

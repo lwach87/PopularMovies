@@ -1,14 +1,19 @@
 package com.example.lukaszwachowski.popularmovies.di.modules;
 
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.BASE_URL;
-import static com.example.lukaszwachowski.popularmovies.configuration.Constants.DATABASE_NAME;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.BASE_URL;
+import static com.example.lukaszwachowski.popularmovies.utils.Constants.DATABASE_NAME;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import com.example.lukaszwachowski.popularmovies.db.MovieDao;
-import com.example.lukaszwachowski.popularmovies.db.MoviesDatabase;
-import com.example.lukaszwachowski.popularmovies.db.Repository;
+import com.example.lukaszwachowski.popularmovies.data.AppDataManager;
+import com.example.lukaszwachowski.popularmovies.data.DataManager;
+import com.example.lukaszwachowski.popularmovies.data.local.AppDbHelper;
+import com.example.lukaszwachowski.popularmovies.data.local.DbHelper;
+import com.example.lukaszwachowski.popularmovies.data.local.MoviesDatabase;
+import com.example.lukaszwachowski.popularmovies.data.remote.ApiHelper;
+import com.example.lukaszwachowski.popularmovies.utils.rx.AppSchedulerProvider;
+import com.example.lukaszwachowski.popularmovies.utils.rx.SchedulerProvider;
 import com.squareup.picasso.Picasso;
 import dagger.Module;
 import dagger.Provides;
@@ -22,42 +27,53 @@ public class AppModule {
 
   @Provides
   @Singleton
-  public Context provideContext(Application application) {
+  Context provideContext(Application application) {
     return application;
   }
 
   @Provides
   @Singleton
-  public Picasso picasso(Context context) {
+  Picasso picasso(Context context) {
     return new Picasso.Builder(context).build();
   }
 
   @Provides
   @Singleton
-  public MoviesDatabase provideDatabase(Context context) {
+  MoviesDatabase provideDatabase(Context context) {
     return Room.databaseBuilder(context, MoviesDatabase.class,
         DATABASE_NAME).build();
   }
 
   @Provides
   @Singleton
-  public MovieDao provideDao(MoviesDatabase moviesDatabase) {
-    return moviesDatabase.movieDao();
-  }
-
-  @Provides
-  @Singleton
-  public Repository repository(MovieDao movieDao) {
-    return new Repository(movieDao);
-  }
-
-  @Provides
-  @Singleton
-  public Retrofit retrofit() {
+  Retrofit retrofit() {
     return new Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .build();
+  }
+
+  @Provides
+  @Singleton
+  ApiHelper provideApiHelper(Retrofit retrofit) {
+    return retrofit.create(ApiHelper.class);
+  }
+
+  @Provides
+  @Singleton
+  DbHelper provideDbHelper(AppDbHelper appDbHelper) {
+    return appDbHelper;
+  }
+
+  @Provides
+  @Singleton
+  DataManager provideDataManager(AppDataManager appDataManager) {
+    return appDataManager;
+  }
+
+  @Provides
+  SchedulerProvider provideSchedulerProvider() {
+    return new AppSchedulerProvider();
   }
 }

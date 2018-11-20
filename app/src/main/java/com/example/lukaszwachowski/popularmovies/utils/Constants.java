@@ -1,4 +1,4 @@
-package com.example.lukaszwachowski.popularmovies.configuration;
+package com.example.lukaszwachowski.popularmovies.utils;
 
 public class Constants {
 
