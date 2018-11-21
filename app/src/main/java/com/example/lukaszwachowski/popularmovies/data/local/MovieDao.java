@@ -14,8 +14,8 @@ public interface MovieDao {
   @Query("SELECT * FROM movies")
   List<MoviesResult> getAllMovies();
 
-  @Query("SELECT count(*) FROM movies WHERE movieId = :id")
-  int isInFavourites(int id);
+  @Query("SELECT * FROM movies WHERE movieId = :id")
+  MoviesResult getMovieById(int id);
 
   @Insert(onConflict = REPLACE)
   void insertMovie(MoviesResult moviesResult);

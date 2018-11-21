@@ -8,6 +8,7 @@ import com.example.lukaszwachowski.popularmovies.data.model.videos.Videos;
 import com.example.lukaszwachowski.popularmovies.data.remote.ApiHelper;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,8 +31,8 @@ public class AppDataManager implements DataManager {
   }
 
   @Override
-  public int isInFavourites(int id) {
-    return dbHelper.isInFavourites(id);
+  public Single<MoviesResult> getMovieById(int id) {
+    return dbHelper.getMovieById(id);
   }
 
   @Override

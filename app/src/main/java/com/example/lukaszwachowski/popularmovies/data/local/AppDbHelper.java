@@ -2,6 +2,7 @@ package com.example.lukaszwachowski.popularmovies.data.local;
 
 import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -22,8 +23,8 @@ public class AppDbHelper implements DbHelper {
   }
 
   @Override
-  public int isInFavourites(int id) {
-    return moviesDatabase.movieDao().isInFavourites(id);
+  public Single<MoviesResult> getMovieById(int id) {
+    return Single.fromCallable(() -> moviesDatabase.movieDao().getMovieById(id));
   }
 
   @Override

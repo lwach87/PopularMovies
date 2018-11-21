@@ -2,13 +2,14 @@ package com.example.lukaszwachowski.popularmovies.data.local;
 
 import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import java.util.List;
 
 public interface DbHelper {
 
   Flowable<List<MoviesResult>> getAllMovies();
 
-  int isInFavourites(int id);
+  Single<MoviesResult> getMovieById(int id);
 
   void insertMovie(MoviesResult moviesResult);
 
