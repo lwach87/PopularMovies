@@ -1,12 +1,19 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
+import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.*;
+import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.setIconGray;
+import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.setIconRed;
+
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.lukaszwachowski.popularmovies.data.DataManager;
 import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.data.model.reviews.ReviewsResult;
 import com.example.lukaszwachowski.popularmovies.data.model.videos.VideosResult;
 import com.example.lukaszwachowski.popularmovies.ui.base.BaseViewModel;
+import com.example.lukaszwachowski.popularmovies.utils.ConfigureView;
 import com.example.lukaszwachowski.popularmovies.utils.rx.SchedulerProvider;
 import java.util.List;
 
@@ -45,17 +52,31 @@ public class DetailViewModel extends BaseViewModel {
     );
   }
 
-  public int isInFavourites(int id) {
-    return getDataManager()
-        .isInFavourites(id);
+  public void addToFavourites(MoviesResult result, ImageView view, Context context) {
+    getDisposable().add(getDataManager()
+        .getMovieById(result.getMovieId())
+        .subscribeOn(getSchedulerProvider().io())
+        .subscribe(moviesResult -> {
+              getDataManager().deleteMovie(result.getMovieId());
+              setIconGray(view, context);
+            },
+            error -> {
+              getDataManager().insertMovie(result);
+              setIconRed(view, context);
+            }
+        )
+    );
   }
 
-  public void insertMovie(MoviesResult moviesResult) {
-    getDataManager().insertMovie(moviesResult);
-  }
-
-  public void deleteMovie(int id) {
-    getDataManager().deleteMovie(id);
+  public void setIconFavourites(int id, ImageView view, Context context) {
+    getDisposable().add(getDataManager()
+        .getMovieById(id)
+        .subscribeOn(getSchedulerProvider().io())
+        .subscribe(
+            moviesResult -> setIconRed(view, context),
+            error -> setIconGray(view, context)
+        )
+    );
   }
 
   public MutableLiveData<List<VideosResult>> getVideosLiveData() {

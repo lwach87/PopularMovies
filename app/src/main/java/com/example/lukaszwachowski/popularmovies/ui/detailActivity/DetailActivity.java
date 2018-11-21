@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,8 +23,6 @@ import com.example.lukaszwachowski.popularmovies.R;
 import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.ui.base.BaseActivity;
 import com.squareup.picasso.Picasso;
-import io.reactivex.Completable;
-import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 
 public class DetailActivity extends BaseActivity<DetailViewModel> implements
@@ -129,7 +126,7 @@ public class DetailActivity extends BaseActivity<DetailViewModel> implements
   }
 
   private void setupUI() {
-    Completable.fromAction(this::setIconFavorites).subscribeOn(Schedulers.io()).subscribe();
+    viewModel.setIconFavourites(result.getMovieId(), favourite, this);
 
     title_detail.setText(result.getOriginalTitle());
     date_detail.setText(result.getReleaseDate());
@@ -140,24 +137,8 @@ public class DetailActivity extends BaseActivity<DetailViewModel> implements
   }
 
   @Override
-  public void onClick(View v) {
-    Completable.fromAction(() -> {
-      if (viewModel.isInFavourites(result.getMovieId()) == 1) {
-        viewModel.deleteMovie(result.getMovieId());
-      } else {
-        viewModel.insertMovie(result);
-      }
-      setIconFavorites();
-    }).subscribeOn(Schedulers.io())
-        .subscribe();
-  }
-
-  private void setIconFavorites() {
-    if (viewModel.isInFavourites(result.getMovieId()) == 1) {
-      favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_red));
-    } else {
-      favourite.setColorFilter(ContextCompat.getColor(this, R.color.fav_grey));
-    }
+  public void onClick(View view) {
+    viewModel.addToFavourites(result, (ImageView) view, this);
   }
 
   private void subscribeToLiveData() {

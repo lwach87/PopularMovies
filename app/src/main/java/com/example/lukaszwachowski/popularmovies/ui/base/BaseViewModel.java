@@ -1,10 +1,6 @@
 package com.example.lukaszwachowski.popularmovies.ui.base;
 
-import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.hideView;
-import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.showView;
-
 import android.arch.lifecycle.ViewModel;
-import android.widget.TextView;
 import com.example.lukaszwachowski.popularmovies.data.DataManager;
 import com.example.lukaszwachowski.popularmovies.utils.rx.SchedulerProvider;
 import io.reactivex.disposables.CompositeDisposable;
@@ -37,13 +33,5 @@ public class BaseViewModel extends ViewModel {
 
   public SchedulerProvider getSchedulerProvider() {
     return schedulerProvider;
-  }
-
-  public void showIcon(TextView textView, boolean noShow) {
-    if (noShow) {
-      hideView(textView);
-    } else {
-      showView(textView);
-    }
   }
 }
