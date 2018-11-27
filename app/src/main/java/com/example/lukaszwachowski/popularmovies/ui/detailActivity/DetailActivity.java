@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -109,20 +108,20 @@ public class DetailActivity extends BaseActivity<DetailViewModel> implements
 
     setupUI();
 
-    viewModel.fetchVideos(String.valueOf(result.getMovieId()), trailers);
-    viewModel.fetchReviews(String.valueOf(result.getMovieId()), reviews);
+    fetchDetailData();
 
-    videoRecyclerView.setLayoutManager(new LinearLayoutManager(this,
-        LinearLayoutManager.HORIZONTAL, false));
     videoRecyclerView.setAdapter(videosAdapter);
     videosAdapter.setListener(this);
-
-    reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     reviewRecyclerView.setAdapter(reviewsAdapter);
 
     favourite.setOnClickListener(this);
 
     subscribeToLiveData();
+  }
+
+  private void fetchDetailData() {
+    viewModel.fetchVideos(String.valueOf(result.getMovieId()), trailers);
+    viewModel.fetchReviews(String.valueOf(result.getMovieId()), reviews);
   }
 
   private void setupUI() {

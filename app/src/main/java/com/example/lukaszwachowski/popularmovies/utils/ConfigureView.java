@@ -30,7 +30,7 @@ public class ConfigureView {
   }
 
   public static void setIconGray(ImageView view, Context context) {
-    view.setColorFilter(ContextCompat.getColor(context, R.color.fav_grey));
+    view.clearColorFilter();
   }
 
   public static void setIconRed(ImageView view, Context context) {

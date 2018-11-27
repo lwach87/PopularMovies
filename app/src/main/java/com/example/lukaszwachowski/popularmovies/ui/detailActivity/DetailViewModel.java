@@ -1,8 +1,8 @@
 package com.example.lukaszwachowski.popularmovies.ui.detailActivity;
 
-import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.*;
 import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.setIconGray;
 import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.setIconRed;
+import static com.example.lukaszwachowski.popularmovies.utils.ConfigureView.showIcon;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
@@ -13,7 +13,6 @@ import com.example.lukaszwachowski.popularmovies.data.model.movies.MoviesResult;
 import com.example.lukaszwachowski.popularmovies.data.model.reviews.ReviewsResult;
 import com.example.lukaszwachowski.popularmovies.data.model.videos.VideosResult;
 import com.example.lukaszwachowski.popularmovies.ui.base.BaseViewModel;
-import com.example.lukaszwachowski.popularmovies.utils.ConfigureView;
 import com.example.lukaszwachowski.popularmovies.utils.rx.SchedulerProvider;
 import java.util.List;
 
