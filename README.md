@@ -1,12 +1,20 @@
-Popular Movies App was created as a part of Udacity [Android Developer Nanodegree Program](https://eu.udacity.com/course/android-developer-nanodegree-by-google--nd801). The application fetches movie data using [themoviedb.org](https://www.themoviedb.org/) API.
+![](images/final.png)
+
+Popular Movies App was created as a part of Udacity [Android Developer Nanodegree Program](https://eu.udacity.com/course/android-developer-nanodegree-by-google--nd801). The application fetches movie data using [themoviedb.org](https://www.themoviedb.org/) API and was build using MVVM architecture.
 
 ## Used Libraries
+- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture/)
 - [RxJava2](https://github.com/ReactiveX/RxJava), [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 - [Dagger2](https://github.com/google/dagger)
 - [Retrofit2](https://github.com/square/retrofit) with [RxJava adapter](https://github.com/square/retrofit/tree/master/retrofit-adapters/rxjava2)
 - [Butterknife](https://github.com/JakeWharton/butterknife)
 - [Gson](https://github.com/google/gson)
 - [Picasso](http://square.github.io/picasso/)
+
+## Build from source
+In order to build the app you must provide your own API key fom themoviedb.org. Open Constants class and paste your key in API_KEY field:
+
+`String API_KEY = ""`
 
 ## Why this project?
 To become an Android developer, you must know how to bring particular mobile experiences to life. Specifically, you need to know how to build clean and compelling user interfaces (UIs), fetch data from network services, and optimize the experience for various mobile devices. You will hone these fundamental skills in this project.
