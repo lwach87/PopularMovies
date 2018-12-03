@@ -46,6 +46,7 @@
   <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.constraint.ConstraintLayout
@@ -149,7 +150,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/trailers"
-        tools:listItem="layout/single_video_item"/>
+        tools:listitem="@layout/single_video_item"/>
 
       <TextView
         android:id="@+id/reviews"
@@ -174,7 +175,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listItem="@layout/single_review_item"/>
+        tools:listitem="@layout/single_review_item"/>
 
       <android.support.constraint.Guideline
         android:id="@+id/guideline"
